@@ -1,0 +1,17 @@
+{
+  "name": "ai-toolkit-archive",
+  "description": "Claude Code에서 쓰는 skill과 작업 자료",
+  "owner": {
+    "name": "jiohLee"
+  },
+  "plugins": [
+    {
+      "name": "writing",
+      "source": "./plugins/writing"
+    },
+    {
+      "name": "design",
+      "source": "./plugins/design"
+    }
+  ]
+}
