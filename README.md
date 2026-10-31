@@ -41,25 +41,17 @@ ai-toolkit-archive/
    claude plugin marketplace add <클론 경로>
    ```
 
-3. `~/.claude/settings.json`(사용자 범위)의 `enabledPlugins`에 플러그인을 켠다.
+3. 플러그인을 사용자 범위에 설치한다. Claude Code가 `~/.claude/settings.json`의 `enabledPlugins`에 자동으로 기록하므로, 모든 프로젝트에서 플러그인이 켜진다.
 
-   ```json
-   {
-     "enabledPlugins": {
-       "writing@ai-toolkit-archive": true,
-       "design@ai-toolkit-archive": true
-     }
-   }
+   ```bash
+   claude plugin install writing@ai-toolkit-archive
+   claude plugin install design@ai-toolkit-archive
    ```
 
-4. 플러그인이 필요 없는 프로젝트에서는 그 프로젝트의 `.claude/settings.local.json`(나에게만)이나 `.claude/settings.json`(함께 쓰는 사람에게도)에서 플러그인을 `false`로 쓴다.
+4. 플러그인이 필요 없는 프로젝트에서는 그 프로젝트에서 플러그인을 끈다. `--scope local`은 나에게만(`.claude/settings.local.json`), `--scope project`는 함께 쓰는 사람에게도(`.claude/settings.json`) 적용된다.
 
-   ```json
-   {
-     "enabledPlugins": {
-       "design@ai-toolkit-archive": false
-     }
-   }
+   ```bash
+   claude plugin disable design@ai-toolkit-archive --scope local
    ```
 
 - skill은 `/writing:writing-in-korean`처럼 플러그인 이름을 붙여 부른다.
