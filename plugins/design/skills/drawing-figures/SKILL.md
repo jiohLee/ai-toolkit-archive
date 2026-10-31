@@ -1,6 +1,6 @@
 ---
 name: drawing-figures
-description: 과학, 공학, 학술 문서용 도식과 그래프를 SVG로 생성/수정하고 검증.
+description: 과학, 공학, 학술 문서용 도식과 그래프를 SVG로 생성, 수정, 검증할 때 사용한다.
 ---
 
 # 작업 자료
