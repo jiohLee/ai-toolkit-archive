@@ -1,5 +1,10 @@
 # ai-toolkit-archive
 
+| 항목 | 내용 |
+| :---: | :--- |
+| **작성일** | 2026-10-31 |
+| **실행 환경** | Claude Code |
+
 > Claude Code에서 쓰는 skill과 작업 자료를 플러그인 마켓플레이스로 관리하는 저장소다.
 
 ## 1. 구성
@@ -34,25 +39,40 @@ ai-toolkit-archive/
 
 ## 2. 등록과 활성화
 
-1. 저장소를 프로젝트 밖의 고정된 위치에 클론한다.
-2. 클론 경로를 사용자 범위의 마켓플레이스로 추가한다.
+### 2.1. 마켓플레이스 추가
 
-   ```bash
-   claude plugin marketplace add <클론 경로>
-   ```
+원격 저장소에서 마켓플레이스를 추가하려면 아래와 같이 한다.
 
-3. 플러그인을 사용자 범위에 설치한다. Claude Code가 `~/.claude/settings.json`의 `enabledPlugins`에 자동으로 기록하므로, 모든 프로젝트에서 플러그인이 켜진다.
+```bash
+claude plugin marketplace add jiohLee/ai-toolkit-archive
+```
 
-   ```bash
-   claude plugin install writing@ai-toolkit-archive
-   claude plugin install design@ai-toolkit-archive
-   ```
+로컬 저장소에서 추가하려면 아래와 같이 한다.
 
-4. 플러그인이 필요 없는 프로젝트에서는 그 프로젝트에서 플러그인을 끈다. `--scope local`은 나에게만(`.claude/settings.local.json`), `--scope project`는 함께 쓰는 사람에게도(`.claude/settings.json`) 적용된다.
+```bash
+git clone git@github.com:jiohLee/ai-toolkit-archive.git <클론 경로>
+claude plugin marketplace add <클론 경로>
+```
 
-   ```bash
-   claude plugin disable design@ai-toolkit-archive --scope local
-   ```
+### 2.2. 플러그인 설치
 
-- skill은 `/writing:writing-in-korean`처럼 플러그인 이름을 붙여 부른다.
-- Claude Code는 클론 폴더에서 플러그인을 바로 읽는다. 파일을 고치면 다음 세션이나 `/reload-plugins` 때 반영된다.
+마켓플레이스를 추가한 뒤 플러그인을 설치하려면 아래와 같이 한다.
+
+```bash
+claude plugin install writing@ai-toolkit-archive
+claude plugin install design@ai-toolkit-archive
+```
+
+### 2.3. 업데이트
+
+원격 저장소에서 추가한 마켓플레이스를 업데이트하려면 아래와 같이 한다.
+
+```bash
+claude plugin marketplace update ai-toolkit-archive
+```
+
+로컬 저장소에서 추가한 마켓플레이스를 업데이트하려면 아래와 같이 한다.
+
+```bash
+git -C <클론 경로> pull
+```
