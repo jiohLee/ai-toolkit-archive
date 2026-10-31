@@ -5,8 +5,9 @@ description: 과학, 공학, 학술 문서용 도식과 그래프를 SVG로 생�
 
 # 작업 자료
 
-- 작업 전에 `${CLAUDE_SKILL_DIR}/references/figure-style.md`의 원문 전체가 context에 있는지 확인한다.
-- 원문이 없거나 요약만 있으면 파일을 다시 읽는다. 원문이 있으면 다시 읽지 않는다.
+아래 파일의 원문이 context에 없으면 먼저 읽는다. 요약만 있으면 없는 것으로 본다.
+
+- `${CLAUDE_SKILL_DIR}/references/figure-style.md`
 
 # 입력
 - 생성: figure 설명(데이터, 표기, 수식, 참고 이미지), 파일 이름, 저장 디렉터리.

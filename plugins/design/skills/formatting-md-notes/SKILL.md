@@ -5,8 +5,9 @@ description: 마크다운 노트(.md)를 쓰거나 고칠 때 사용한다. 노�
 
 # 작업 자료
 
-- 작업 전에 `${CLAUDE_SKILL_DIR}/references/md-note-format.md`의 원문 전체가 context에 있는지 확인한다.
-- 원문이 없거나 요약만 있으면 파일을 다시 읽는다. 원문이 있으면 다시 읽지 않는다.
+아래 파일의 원문이 context에 없으면 먼저 읽는다. 요약만 있으면 없는 것으로 본다.
+
+- `${CLAUDE_SKILL_DIR}/references/md-note-format.md`
 
 # 절차
 
