@@ -1,6 +1,6 @@
 {
   "name": "design",
-  "description": "마크다운 노트 형식, 디자인 가이드를 따르는 도식 생성과 문서 변환",
+  "description": "문서 작업과 변환에 필요한 형식 및 디자인 가이드 툴킷",
   "author": {
     "name": "jiohLee"
   }
