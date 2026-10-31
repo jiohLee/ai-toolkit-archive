@@ -16,9 +16,7 @@ description: 과학, 공학, 학술 문서용 도식과 그래프를 SVG로 생�
 
 # 절차
 1. 규칙에 따라 SVG를 생성 또는 수정.
-2. sharp 렌더러로 생성된 SVG를 PNG로 변환.
-   - 쓸 수 있는 sharp가 이미 있으면 그것을 쓴다.
-   - 없다면 `${CLAUDE_PLUGIN_DATA}`에 sharp를 설치하고, 설치한 sharp를 쓴다.
+2. sharp 렌더러로 생성된 SVG를 PNG로 변환. 사용 가능한 sharp가 없다면 `${CLAUDE_PLUGIN_DATA}`에 sharp를 설치해 사용.
 3. 변환된 PNG를 시각적으로 검증.
 4. 문제 발견시 수정하고 다시 검증.
 
