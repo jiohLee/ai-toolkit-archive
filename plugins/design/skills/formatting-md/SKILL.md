@@ -1,5 +1,5 @@
 ---
-name: formatting-md-notes
+name: formatting-md
 description: 마크다운 문서(.md)를 쓰거나 고칠 때 사용한다. 문서의 메타 정보, 개요, 목차, 제목, 목록, 표, 이미지, 수식, 각주 형식을 정한다.
 ---
 

@@ -26,12 +26,12 @@ ai-toolkit-archive/
     │       └── writing-in-korean/
     │           ├── SKILL.md
     │           └── references/korean-writing-guide.md
-    └── design/                     # 마크다운 노트 형식, 도식 생성, 문서 변환
+    └── design/                     # 마크다운 문서 형식, 도식 생성, 문서 변환
         ├── .claude-plugin/plugin.json
         └── skills/
-            ├── formatting-md-notes/
+            ├── formatting-md/
             │   ├── SKILL.md
-            │   └── references/md-note-format.md
+            │   └── references/md-format-guide.md
             └── drawing-figures/
                 ├── SKILL.md
                 └── references/figure-style.md
