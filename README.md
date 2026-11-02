@@ -7,6 +7,15 @@
 
 > Claude Code에서 쓰는 skill과 작업 자료를 플러그인 마켓플레이스로 관리하는 저장소다.
 
+#### 목차
+
+- [1. 구성](#1-구성)
+  - [1.1. skill 목록](#11-skill-목록)
+- [2. 등록과 활성화](#2-등록과-활성화)
+  - [2.1. 마켓플레이스 추가](#21-마켓플레이스-추가)
+  - [2.2. 플러그인 설치](#22-플러그인-설치)
+  - [2.3. 업데이트](#23-업데이트)
+
 ## 1. 구성
 
 - 다루는 대상이 같은 skill끼리 플러그인 하나로 묶는다.
@@ -26,16 +35,41 @@ ai-toolkit-archive/
     │       └── writing-in-korean/
     │           ├── SKILL.md
     │           └── references/korean-writing-guide.md
-    └── design/                     # 마크다운 문서 형식, 도식 생성, 문서 변환
+    └── design/                     # 마크다운 문서와 슬라이드 형식, 도식 생성, 문서 변환
         ├── .claude-plugin/plugin.json
         └── skills/
-            ├── formatting-md/
+            ├── formatting-md-as-doc/
             │   ├── SKILL.md
-            │   └── references/md-format-guide.md
+            │   └── references/
+            │       ├── md-doc-format-guide.md
+            │       └── style.less  # Markdown Preview Enhanced 기본 스타일
+            ├── formatting-md-as-slides/
+            │   ├── SKILL.md
+            │   └── references/
+            │       ├── md-slides-format-guide.md
+            │       └── style.css   # Marp 기본 테마
             └── drawing-figures/
                 ├── SKILL.md
                 └── references/figure-style.md
 ```
+
+### 1.1. skill 목록
+
+<div align="center">
+
+| 플러그인 | skill | 용도 |
+| :---: | :--- | :--- |
+| `writing` | `writing-in-korean` | 한국어 문장을 쓰거나 고칠 때 문체, 용어, 문장 부호를 정한다. |
+| `design` | `formatting-md-as-doc` | 읽기용 문서의 마크다운 형식을 정한다. |
+| `design` | `formatting-md-as-slides` | Marp 슬라이드 원고의 마크다운 형식을 정한다. |
+| `design` | `drawing-figures` | 문서에 넣을 도식과 그래프의 스타일을 정한다. |
+
+</div>
+
+*Table 1. 플러그인별 skill*
+
+- `formatting-md-as-doc`의 `style.less`와 `formatting-md-as-slides`의 `style.css`는 작업 환경에 스타일이 없을 때 복사해 쓰는 기본 스타일이다.
+- 두 스타일의 원본은 note-archive의 `99-settings/`에 있다. 원본은 `markdown-preview-enhanced/style.apple.less`와 `marp/style.apple.css`다. 원본을 고치면 이 저장소에도 복사한다.
 
 ## 2. 등록과 활성화
 
