@@ -1,0 +1,430 @@
+/* =====================================================================
+ * @theme apple
+ * @auto-scaling fittingHeader,math
+ *
+ * Apple-inspired slide theme for Marp.
+ *
+ * Canvas: 980px x 551px, 16:9 (tile padding 80px).
+ * Background: one light (canvas) and one dark (surface-tile-1) only.
+ * ===================================================================== */
+
+:root {
+  /* ---------- Color tokens ---------- */
+  --primary: #0066cc;
+  --primary-focus: #0071e3;
+  --primary-on-dark: #2997ff;
+  --ink: #1d1d1f;
+  --body-on-dark: #ffffff;
+  --body-muted: #cccccc;
+  --ink-muted-80: #333333;
+  --ink-muted-48: #7a7a7a;
+  --divider-soft: #f0f0f0;
+  --hairline: #e0e0e0;
+  --canvas: #ffffff;
+  --canvas-parchment: #f5f5f7;
+  --surface-tile-1: #272729;
+  --on-primary: #ffffff;
+
+  /* ---------- Shape tokens ---------- */
+  --radius-prose: 5px;    /* rounded.xs: code, quotes, callouts, images */
+  --radius-card: 18px;    /* rounded.lg: store-utility-card */
+  --radius-pill: 9999px;  /* rounded.pill: button-primary */
+
+  /* ---------- Font stacks ---------- */
+  /* -apple-system resolves to SF Pro Display or SF Pro Text by size */
+  --font-text: -apple-system, BlinkMacSystemFont, "Pretendard", "Inter",
+               "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, Menlo, "D2Coding", Consolas,
+               "Liberation Mono", monospace;
+}
+
+/* =====================================================================
+ * Tiles (components.product-tile-light, product-tile-dark)
+ * ===================================================================== */
+section {
+  /* Roles that change on dark tiles */
+  --text-del: var(--ink-muted-48);
+  --text-fine: var(--ink-muted-48);
+  --link: var(--primary);
+  --line: var(--hairline);
+  --line-soft: var(--divider-soft);
+
+  width: 980px;
+  height: 551px;
+  box-sizing: border-box;
+  padding: 80px;
+  overflow: hidden;
+  position: relative;
+  background: var(--canvas);
+  color: var(--ink);
+  /* typography.body */
+  font-family: var(--font-text);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.47;
+  letter-spacing: -0.374px;
+  /* Korean breaks between words, not syllables */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+section * { box-sizing: border-box; }
+
+section.dark {
+  --text-del: var(--body-muted);
+  --text-fine: var(--body-muted);
+  --link: var(--primary-on-dark);
+  --line: var(--ink-muted-48);
+  --line-soft: var(--ink-muted-48);
+  background: var(--surface-tile-1);
+  color: var(--body-on-dark);
+}
+
+/* =====================================================================
+ * Layout classes
+ * ===================================================================== */
+/* Centered stack */
+section.hero, section.statement, section.closing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+section.hero h1 {   /* typography.hero-display */
+  margin-bottom: 17px;
+  font-size: 56px;
+  line-height: 1.07;
+  letter-spacing: -0.28px;
+}
+section.hero p, section.statement p {   /* typography.lead */
+  font-size: 28px;
+  line-height: 1.14;
+  letter-spacing: 0.196px;
+}
+section.hero p { margin-bottom: 32px; }
+section.closing ul { margin-bottom: 32px; padding: 0; list-style: none; }
+
+/* Links in the last paragraph of hero and closing become pill buttons */
+section.hero p:last-child, section.closing p:last-child { margin: 0; }
+section.hero p:last-child a, section.closing p:last-child a {
+  /* components.button-primary */
+  display: inline-block;
+  margin: 0 4px;
+  padding: 11px 22px;
+  border-radius: var(--radius-pill);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.47;
+  letter-spacing: -0.374px;
+  text-decoration: none;
+}
+section.hero p:last-child a + a, section.closing p:last-child a + a {
+  /* components.button-secondary-pill */
+  padding: 10px 21px;   /* 1px border keeps the outer size of the primary pill */
+  border: 1px solid var(--link);
+  background: transparent;
+  color: var(--link);
+}
+section.hero p:last-child a:active, section.closing p:last-child a:active { transform: scale(0.95); }
+section.hero p:last-child a:focus-visible, section.closing p:last-child a:focus-visible {
+  outline: 2px solid var(--primary-focus);
+}
+
+/* Link list: typography.dense-link. Each column takes 8 items, then a new column starts. */
+section.toc ul {
+  padding: 0;
+  list-style: none;
+  line-height: 2.41;
+  letter-spacing: 0;
+}
+section.toc > ul {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(8, auto);
+  grid-auto-columns: minmax(0, 1fr);
+  column-gap: 24px;
+}
+section.toc h2 { margin-bottom: 12px; }
+section.toc li { margin: 0; }
+
+/* Grid, written as HTML in the slide. Rows and columns go in style="",
+ * which needs "markdown.marp.html": "all" (Marp CLI: --html).
+ *
+ *   <div class="grid">                 one row, equal columns
+ *   <div class="grid" style="grid-template-columns: 2fr 3fr">
+ *   <div class="cell">                 plain cell
+ *   <div class="card">                 card: blue border only
+ *   <div class="card accent">          card: translucent blue background
+ *   <div class="card" style="grid-column: span 2">
+ *
+ * Leave a blank line after each opening tag so Markdown inside it is parsed. */
+.grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 24px;
+  margin: 0 0 17px;
+}
+.grid[style*="grid-template-columns"] { grid-auto-flow: row; }
+.cell { min-width: 0; }
+.cell img { max-height: 280px; }
+
+/* Cards: rounded.lg and spacing.lg from components.store-utility-card,
+ * with the button grammar's blue instead of its hairline border */
+.card {
+  --accent-fill: rgba(0, 102, 204, 0.12);
+  min-width: 0;
+  padding: 24px;
+  border: 1px solid var(--link);
+  border-radius: var(--radius-card);
+}
+section.dark .card { --accent-fill: rgba(41, 151, 255, 0.2); }
+.card.accent { background: var(--accent-fill); }
+.cell > :first-child, .card > :first-child { margin-top: 0; }
+.cell > :last-child, .card > :last-child { margin-bottom: 0; }
+
+/* =====================================================================
+ * Headings
+ * ===================================================================== */
+h1, h2, h3, h4, h5, h6 { color: inherit; font-weight: 600; }
+h1 {   /* typography.display-lg. Left by default; centered stacks center it through section. */
+  margin: 0 0 32px;
+  font-size: 40px;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+h2 {   /* typography.display-md */
+  margin: 24px 0 17px;
+  font-size: 34px;
+  line-height: 1.47;
+  letter-spacing: -0.374px;
+}
+h3 {   /* typography.tagline */
+  margin: 24px 0 12px;
+  font-size: 21px;
+  line-height: 1.19;
+  letter-spacing: 0.231px;
+}
+h4 {   /* typography.body-strong */
+  margin: 17px 0 8px;
+  font-size: 17px;
+  line-height: 1.24;
+  letter-spacing: -0.374px;
+}
+h5 {   /* typography.caption-strong */
+  margin: 12px 0 8px;
+  font-size: 14px;
+  line-height: 1.29;
+  letter-spacing: -0.224px;
+}
+h6 {   /* typography.caption */
+  margin: 12px 0 8px;
+  color: var(--text-fine);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.43;
+  letter-spacing: -0.224px;
+}
+
+/* =====================================================================
+ * Prose
+ * ===================================================================== */
+p, ul, ol, dl, pre, table, blockquote, .callout { margin: 0 0 17px; }
+ul, ol { padding-left: 24px; }
+li { margin: 0 0 8px; }
+li > ul, li > ol { margin: 8px 0 0; }
+dt { font-weight: 600; }
+dd { margin: 0 0 8px 24px; }
+
+/* The first and last blocks of a tile leave no extra gap */
+section > :first-child, section > header + * { margin-top: 0; }
+section > :last-child, blockquote > :last-child, li > :last-child { margin-bottom: 0; }
+
+/* ---------- Inline text ---------- */
+strong, b { font-weight: 600; color: inherit; }   /* typography.body-strong */
+del, s { color: var(--text-del); }
+mark { background: rgba(0, 102, 204, 0.12); color: inherit; }
+sub, sup { line-height: 0; }   /* keep the line height even */
+
+/* ---------- Links: the single accent ---------- */
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+/* Light cards keep Action Blue even on dark tiles */
+blockquote, .callout { --link: var(--primary); }
+
+/* ---------- Code: small chips inline, parchment cards for blocks ---------- */
+code, kbd, pre { font-family: var(--font-mono); letter-spacing: 0; }
+:not(pre) > code, kbd {
+  padding: .12em .38em;
+  border-radius: var(--radius-prose);
+  background: var(--canvas-parchment);
+  color: var(--ink);
+  font-size: .85em;
+}
+kbd { border: 1px solid var(--hairline); box-shadow: none; vertical-align: baseline; }
+pre {
+  padding: 20px;
+  border-radius: var(--radius-prose);
+  background: var(--canvas-parchment);
+  color: var(--ink-muted-80);
+  font-size: 14px;   /* typography.caption */
+  line-height: 1.43;
+}
+/* VS Code's webview colors every <code>, so the code inside a block is reset */
+pre code { padding: 0; border-radius: 0; background: transparent; color: inherit; }
+pre, pre code {     /* code blocks wrap instead of scrolling */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ---------- Syntax colors: same values as MPE's codeBlockTheme github.css ---------- */
+.hljs-comment, .hljs-quote { color: #969896; }
+.hljs-keyword, .hljs-built_in, .hljs-operator { color: #a71d5d; }
+.hljs-string, .hljs-regexp, .hljs-attr, .hljs-link { color: #183691; }
+.hljs-number, .hljs-literal, .hljs-symbol, .hljs-variable.constant_, .hljs-meta { color: #0086b3; }
+.hljs-name, .hljs-selector-tag, .hljs-selector-id, .hljs-selector-class { color: #63a35c; }
+.hljs-title, .hljs-attribute, .hljs-type, .hljs-class { color: #795da3; }
+.hljs-section { color: #1d3e81; font-weight: 600; }
+.hljs-addition { color: #55a532; background: #eaffea; }
+.hljs-deletion { color: #bd2c00; background: #ffecec; }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: 600; }
+
+/* ---------- Blockquote: parchment card with a left bar ---------- */
+blockquote {
+  padding: 17px 24px;
+  border-left: 4px solid var(--hairline);
+  border-radius: var(--radius-prose);
+  background: var(--canvas-parchment);
+  color: var(--ink-muted-80);
+}
+
+/* ---------- Tables: hairlines only, no grid ---------- */
+table { width: 100%; border-collapse: collapse; }
+th, td {
+  padding: 10px 16px 10px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  text-align: left;
+  vertical-align: top;
+}
+th {   /* typography.caption-strong */
+  border-bottom-color: var(--line);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.29;
+  letter-spacing: -0.224px;
+}
+
+/* ---------- Note format ----------
+ * Marp's default HTML filter removes align="center" and keeps a bare <div>,
+ * so a bare <div> means the note format's centered wrapper. */
+div:not([class]) { margin: 0 0 12px; text-align: center; }
+div:not([class]) table { width: auto; margin: 0 auto; }
+/* *Table 1. ...* and *Figure 1. ...* after the wrapper: typography.caption */
+div:not([class]) ~ p:has(> em:only-child) {
+  color: var(--text-fine);
+  font-size: 14px;
+  line-height: 1.43;
+  letter-spacing: -0.224px;
+  text-align: center;
+}
+
+/* ---------- Rules, images ---------- */
+hr { height: 1px; margin: 17px 0; border: 0; background: var(--line); }
+img { max-width: 100%; border-radius: var(--radius-prose); }
+img.emoji, img[data-marp-twemoji] { border-radius: 0; }
+
+/* ---------- Footnotes: Marp has no [^1] syntax, so <sup>1</sup> plus this box ----------
+ * typography.caption. Sits between the 80px tile padding and the footer. */
+.footnotes {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  bottom: 44px;
+  color: var(--ink-muted-80);
+  font-size: 14px;
+  line-height: 1.43;
+  letter-spacing: -0.224px;
+}
+section.dark .footnotes { color: var(--body-muted); }
+.footnotes p { margin: 0; }
+
+/* =====================================================================
+ * Callouts
+ * Marp has no > [!NOTE] syntax, so write <div class="callout note">.
+ * Backgrounds are opaque so the cards stay readable on dark tiles.
+ * ===================================================================== */
+.callout {
+  position: relative;
+  padding: 14px 24px;
+  border-radius: var(--radius-prose);
+  color: var(--ink);
+}
+.callout > :last-child { margin-bottom: 0; }
+.callout > p { margin-bottom: 8px; }
+.callout::before {   /* title */
+  content: var(--callout-title);
+  display: block;
+  padding-left: 1.4em;
+  color: rgb(var(--callout-color));
+  font-weight: 600;
+}
+.callout::after {    /* icon: GitHub Octicons (MIT), drawn with a CSS mask */
+  content: "";
+  position: absolute;
+  top: 18px;
+  left: 24px;
+  width: 1em;
+  height: 1em;
+  background-color: rgb(var(--callout-color));
+  -webkit-mask: var(--callout-svg) no-repeat center / contain;
+          mask: var(--callout-svg) no-repeat center / contain;
+}
+.callout.note {
+  --callout-title: "Note";
+  --callout-color: 0, 102, 204;    /* colors.primary (single-accent rule) */
+  --callout-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z'/%3E%3C/svg%3E");
+  background: #e6f0fa;             /* primary at 10% on white */
+}
+.callout.tip {
+  --callout-title: "Tip";
+  --callout-color: 63, 122, 14;    /* #3f7a0e lime green */
+  --callout-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z'/%3E%3C/svg%3E");
+  background: #eef7e2;             /* pastel lime */
+}
+.callout.important {
+  --callout-title: "Important";
+  --callout-color: 123, 74, 216;   /* #7b4ad8 violet */
+  --callout-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z'/%3E%3C/svg%3E");
+  background: #f3eefc;             /* pastel lavender */
+}
+.callout.warning {
+  --callout-title: "Warning";
+  --callout-color: 236, 117, 0;    /* crossnote's default orange */
+  --callout-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z'/%3E%3C/svg%3E");
+  background: #fdf1e6;             /* crossnote's orange at 10% on white */
+}
+.callout.caution {
+  --callout-title: "Caution";
+  --callout-color: 192, 53, 44;    /* #c0352c red */
+  --callout-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z'/%3E%3C/svg%3E");
+  background: #fdecea;             /* pastel rose */
+}
+
+/* =====================================================================
+ * Slide furniture: typography.fine-print
+ * ===================================================================== */
+header, footer, section::after {
+  position: absolute;
+  color: var(--text-fine);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: -0.12px;
+}
+header { top: 24px; left: 80px; right: 80px; text-align: center; }
+footer { bottom: 24px; left: 80px; right: 80px; text-align: center; }
+section::after { bottom: 24px; right: 24px; padding: 0; }   /* page number (paginate: true); Marp inherits the tile padding otherwise */
