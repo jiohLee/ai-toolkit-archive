@@ -1,0 +1,209 @@
+/* =====================================================================
+ * Apple-inspired light style for Markdown Preview Enhanced (crossnote)
+ * Scope : Global style.less (Markdown Preview Enhanced: Customize CSS (Global))
+ * Base  : previewTheme "github-light.css", codeBlockTheme "github.css"
+ *
+ * Every border-radius is 5px. Layout and spacing stay github-light.
+ * ===================================================================== */
+
+/* ---------- Color tokens ---------- */
+@primary:      #0066cc;  // colors.primary          - links, checkboxes, mark
+@ink:          #1d1d1f;  // colors.ink              - all text
+@ink-muted-80: #333333;  // colors.ink-muted-80     - quotes, footnotes
+@ink-muted-48: #7a7a7a;  // colors.ink-muted-48     - strikethrough
+@hairline:     #e0e0e0;  // colors.hairline         - rules, table header line, kbd
+@divider-soft: #f0f0f0;  // colors.divider-soft     - table row lines
+@parchment:    #f5f5f7;  // colors.canvas-parchment - code, quote cards
+
+/* ---------- Shape token ---------- */
+// One radius for everything: inline code, kbd, code blocks, quotes, callouts, images.
+@radius: 5px;
+
+/* ---------- Font tokens ---------- */
+// SF Pro on Apple platforms; elsewhere Pretendard (Inter-based Latin + Hangul) or Inter
+@font-text: -apple-system, BlinkMacSystemFont, "Pretendard", "Inter",
+            "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+@font-mono: "SF Mono", ui-monospace, Menlo, "D2Coding", Consolas,
+            "Liberation Mono", monospace;
+
+/* ===================================================================== */
+.markdown-preview.markdown-preview {
+  font-family: @font-text;
+  font-size: 17px;                   // typography.body: 17px, not 16px
+  color: @ink;                       // github-light uses #333
+
+  /* ---------- Headings: github-light sizes, weight 600, Apple ink ---------- */
+  h1, h2, h3, h4, h5, h6 { color: @ink; }   // github-light uses #000
+
+  /* ---------- Inline text ---------- */
+  strong, b { font-weight: 600; color: inherit; }   // typography.body-strong; github-light uses #000
+  del { color: @ink-muted-48; }
+  mark { background: fade(@primary, 12%); color: inherit; }
+
+  /* ---------- Links: the single accent ---------- */
+  a { color: @primary; }             // also wins over github-light's hover color
+  a:not([href]) { color: inherit; }  // our `a` color outranks github-light's own rule
+
+  /* ---------- Code: small chips inline, parchment cards for blocks ---------- */
+  code, kbd, pre { font-family: @font-mono; }
+  :not(pre) > code, kbd {
+    color: @ink;                     // github-light: #000
+    background-color: @parchment;    // github-light: #f0f0f0
+    border-radius: @radius;
+    padding: .12em .38em;
+  }
+  code::before, code::after { content: none; }   // padding replaces github-light's nbsp spacers
+  kbd { border: 1px solid @hairline; }
+  pre {
+    background-color: @parchment;    // also covers <pre> without a language class
+    border-radius: @radius;
+    padding: unit((20 / 17), em);
+  }
+
+  /* ---------- Blockquote: parchment card with a left bar ---------- */
+  blockquote {
+    color: @ink-muted-80;
+    background-color: @parchment;
+    border-radius: @radius;
+    padding: unit((17 / 17), em) unit((24 / 17), em);
+  }
+
+  /* ---------- Callouts (> [!NOTE] ...) ---------- */
+  .callout {
+    border-radius: @radius;
+    padding: unit((14 / 17), em) unit((24 / 17), em);
+    > p { margin-top: 0; }                // crossnote adds 1rem above each paragraph
+    > :last-child { margin-bottom: 0; }   // keep bottom padding equal to the top
+    > .callout-title {
+      font-weight: 600;
+      margin: 0;
+      padding: 0 0 0 .4rem;          // same left inset as crossnote's `.callout > p`
+      // icon sits inline at the start of the title, so it lines up with the body text
+      &::before {
+        position: static;
+        display: inline-block;
+        line-height: 1;
+        vertical-align: -0.15em;
+        margin-right: .4em;
+      }
+    }
+  }
+  // Only the five GitHub alert types are styled; every other type keeps crossnote's defaults.
+  .callout[data-callout="note"] { --callout-color: 0, 102, 204; }   // Action Blue (single-accent rule)
+  // tip / important / caution: mid-tone title + pastel card
+  // (--callout-color drives the title and icon, background is set directly)
+  .callout[data-callout="tip"] {
+    --callout-color: 63, 122, 14;    // #3f7a0e lime green (4.8:1 on bg)
+    background: #eef7e2;             // pastel lime
+  }
+  .callout[data-callout="important"] {
+    --callout-color: 123, 74, 216;   // #7b4ad8 violet, GitHub's IMPORTANT hue (4.8:1 on bg)
+    background: #f3eefc;             // pastel lavender
+  }
+  .callout[data-callout="caution"] {
+    --callout-color: 192, 53, 44;    // #c0352c red (4.9:1 on bg)
+    background: #fdecea;             // pastel rose
+  }
+  // warning keeps crossnote's default orange
+
+  // GitHub Octicons (MIT) for the five GitHub alert types, drawn with a CSS mask
+  // so the icon takes the callout color. Other types keep crossnote's Material Icons.
+  .callout[data-callout="note"] {
+    --callout-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z'/%3E%3C/svg%3E");
+  }
+  .callout[data-callout="tip"] {
+    --callout-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z'/%3E%3C/svg%3E");
+  }
+  .callout[data-callout="important"] {
+    --callout-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z'/%3E%3C/svg%3E");
+  }
+  .callout[data-callout="warning"] {
+    --callout-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z'/%3E%3C/svg%3E");
+  }
+  .callout[data-callout="caution"] {
+    --callout-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z'/%3E%3C/svg%3E");
+  }
+  .callout[data-callout="note"] > .callout-title::before,
+  .callout[data-callout="tip"] > .callout-title::before,
+  .callout[data-callout="important"] > .callout-title::before,
+  .callout[data-callout="warning"] > .callout-title::before,
+  .callout[data-callout="caution"] > .callout-title::before {
+    content: "";
+    font-size: 1em;
+    width: 1em;
+    height: 1em;
+    background-color: rgb(var(--callout-color));
+    -webkit-mask: var(--callout-svg) no-repeat center / contain;
+            mask: var(--callout-svg) no-repeat center / contain;
+  }
+
+  /* ---------- Tables: hairlines only, no grid ---------- */
+  table {
+    th, td {
+      border: 0;
+      border-bottom: 1px solid @divider-soft;
+      padding: unit((10 / 17), em) unit((16 / 17), em) unit((10 / 17), em) 0;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      font-size: unit((14 / 17), em);  // typography.caption-strong
+      font-weight: 600;              // github-light: 700
+      color: @ink;                   // github-light: #000
+      border-bottom: 1px solid @hairline;
+    }
+  }
+
+  /* ---------- Rules, images, task lists, footnotes ---------- */
+  hr { height: 1px; background-color: @hairline; }  // github-light: 4px #d6d6d6
+  img { border-radius: @radius; }
+  .task-list-item-checkbox, input[type="checkbox"] { accent-color: @primary; }
+  .footnotes, section.footnotes {
+    font-size: unit((14 / 17), em);  // typography.caption
+    color: @ink-muted-80;
+  }
+
+  /* =====================================================================
+   * Functions (not design)
+   * ===================================================================== */
+  word-break: keep-all;              // Korean breaks between words, not syllables
+  > :first-child { margin-top: 0; }  // no gap above the document title
+
+  h1, h2, h3, h4 {                   // heading underline
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.3em;
+  }
+  a:hover { text-decoration: underline; }   // github-light keeps links plain on hover
+
+  pre, pre code {                    // code blocks wrap instead of scrolling
+    white-space: pre-wrap;           // 줄바꿈은 살리고, 넘치면 접음
+    overflow-wrap: anywhere;         // 공백 없는 긴 URL도 중간에서 끊음
+    word-break: break-word;
+  }
+
+  // note-format tables: <div align="center"> wrapper centers the table itself
+  div[align="center"] table {
+    display: table;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ---------- Print / Chrome PDF ---------- */
+  @media print {
+    font-size: 15px;                 // print text at 15px; em-based sizes follow
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;       // keep background colors in the PDF
+
+    h2 {
+      break-before: page;            // each chapter starts a new page
+      page-break-before: always;
+      margin-top: 0;                 // Chrome keeps the margin after a forced break
+    }
+    blockquote, .callout, img, tr { break-inside: avoid; page-break-inside: avoid; }
+    // wide tables and long inline code wrap inside the page instead of overflowing;
+    // any overflow makes Chrome shrink every page of the PDF to fit
+    th, td, code { overflow-wrap: anywhere; }
+    code { white-space: pre-wrap; }   // inline code defaults to `pre`, which blocks wrapping
+  }
+}

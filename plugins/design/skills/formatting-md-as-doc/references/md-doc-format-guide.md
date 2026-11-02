@@ -1,6 +1,8 @@
-# 마크다운 형식 가이드
+# 마크다운 문서 형식 가이드
 
+- 이 가이드는 읽기용 문서(document)를 마크다운으로 쓸 때 적용한다.
 - 아래 범위에는 적용하지 않는다.
+  - 슬라이드 원고
   - AI에게 제공하는 지침 파일: `CLAUDE.md`, `.claude/` 아래 파일(rules, skills 등)
   - AI가 대화에서 하는 답변
 
@@ -103,7 +105,7 @@
 ```markdown
 <div align="center">
   <img src="./figures/fNN-{name}.svg" width=80%>
-</div><br>
+</div>
 
 *Figure N. {caption}*
 ```
