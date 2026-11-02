@@ -146,7 +146,7 @@ section.toc > ul {
   grid-auto-columns: minmax(0, 1fr);
   column-gap: 24px;
 }
-section.toc h2 { margin-bottom: 12px; }
+section.toc h1 { margin-bottom: 12px; }
 section.toc li { margin: 0; }
 
 /* Grid, written as HTML in the slide. Rows and columns go in style="",
