@@ -184,7 +184,7 @@ paginate: true
 ### 9.1. 이미지
 
 - 그림 파일은 `./figures/fNN-{name}.svg`에 둔다.
-- 번호와 캡션이 있는 그림은 아래 형식을 쓴다. 그림 번호는 원고 전체에서 차례로 매긴다.
+- 그림은 캡션 유무와 상관없이 아래 이미지 태그 형식을 쓴다. 캡션이 있으면 그림 번호를 원고 전체에서 차례로 매긴다.
 - 본문 영역의 높이가 391px이므로 `width`는 문서의 80%보다 작게 잡는다. 그림의 가로세로 비율에 맞춰 14장의 방법으로 확인한다.
 
 ```markdown
@@ -195,14 +195,22 @@ paginate: true
 *Figure N. {caption}*
 ```
 
-- 캡션이 필요 없으면 Marp 이미지 문법을 쓴다. 크기는 `w:` 또는 `h:`로 정한다.
+- 캡션이 없으면 캡션 줄(`*Figure N. …*`)만 생략하고, 이미지 태그는 그대로 쓴다.
+
+```markdown
+<div align="center">
+  <img src="./figures/fNN-{name}.svg" width=40%>
+</div>
+```
+
+- Marp 이미지 문법은 이미지 태그로 할 수 없는 배경(`bg`)과 그림자(`drop-shadow`)에만 쓴다.
 - 슬라이드 한쪽을 그림으로 채우려면 `bg`를 쓴다. 글은 나머지 영역에 놓인다.
 - 그림자는 제품 사진에만 쓰고, 값은 `drop-shadow:3px,5px,30px,rgba(0,0,0,.22)`로 쓴다.
 
 ```markdown
-![w:240](./figures/fNN-{name}.svg)
-
 ![bg right:40%](./figures/fNN-{name}.svg)
+
+![w:240 drop-shadow:3px,5px,30px,rgba(0,0,0,.22)](./figures/fNN-{name}.png)
 ```
 
 ### 9.2. 표
@@ -276,7 +284,7 @@ paginate: true
 </div>
 ```
 
-- 칸 안에 그림과 캡션을 넣을 때는 `cell` 안에 9.1절의 형식을 쓴다. 칸 안의 그림은 `h:`로 높이를 정한다.
+- 칸 안에 그림을 넣을 때는 `cell` 안에 9.1절의 이미지 태그 형식을 쓴다. `width`는 칸 너비 기준이다. 테마가 칸 안의 그림 높이를 280px까지로 제한하므로, 높이가 280px을 넘으면 SVG는 비율을 지킨 채 작게 그려지고 PNG는 세로로 찌그러진다. 14장의 방법으로 확인하며 `width`를 줄인다.
 
 ```markdown
 <div class="grid" style="grid-template-columns: 1fr 1fr">
@@ -287,9 +295,7 @@ paginate: true
 </div>
 <div class="cell">
 <div align="center">
-
-![h:220](./figures/fNN-{name}.svg)
-
+  <img src="./figures/fNN-{name}.svg" width=90%>
 </div>
 
 *Figure N. {caption}*
