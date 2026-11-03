@@ -228,6 +228,17 @@ h6 {   /* typography.caption */
   letter-spacing: -0.224px;
 }
 
+/* A caption right above the slide title sits in the top padding, so the H1
+ * starts 48px from the top with or without it. Centered stacks keep it in flow. */
+section:not(.hero, .statement, .closing) > h6:first-child:has(+ h1),
+section:not(.hero, .statement, .closing) > header + h6:has(+ h1) {
+  position: absolute;
+  top: 22px;
+  left: 80px;
+  right: 80px;
+  margin: 0;
+}
+
 /* =====================================================================
  * Prose
  * ===================================================================== */
