@@ -4,7 +4,7 @@
  *
  * Apple-inspired slide theme for Marp.
  *
- * Canvas: 980px x 551px, 16:9 (tile padding 80px).
+ * Canvas: 980px x 551px, 16:9 (padding 48px top, 80px sides and bottom).
  * Background: one light (canvas) and one dark (surface-tile-1) only.
  * ===================================================================== */
 
@@ -52,7 +52,7 @@ section {
   width: 980px;
   height: 551px;
   box-sizing: border-box;
-  padding: 80px;
+  padding: 48px 80px 80px;   /* top: only the header sits there; bottom: footer, page number, footnotes */
   overflow: hidden;
   position: relative;
   background: var(--canvas);
@@ -339,7 +339,7 @@ img { max-width: 100%; border-radius: var(--radius-prose); }
 img.emoji, img[data-marp-twemoji] { border-radius: 0; }
 
 /* ---------- Footnotes: Marp has no [^1] syntax, so <sup>1</sup> plus this box ----------
- * typography.caption. Sits between the 80px tile padding and the footer. */
+ * typography.caption. Sits between the 80px bottom padding and the footer. */
 .footnotes {
   position: absolute;
   left: 80px;
