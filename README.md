@@ -29,12 +29,19 @@ ai-toolkit-archive/
 ├── .claude-plugin/
 │   └── marketplace.json
 └── plugins/
-    ├── writing/                    # 한국어 작문
+    ├── writing/                    # 한국어 작문, 문서 검토
     │   ├── .claude-plugin/plugin.json
+    │   ├── shared/
+    │   │   ├── korean-writing-guide.md
+    │   │   └── review-report-format.md
     │   └── skills/
-    │       └── writing-in-korean/
-    │           ├── SKILL.md
-    │           └── references/korean-writing-guide.md
+    │       ├── writing-in-korean/
+    │       │   └── SKILL.md
+    │       ├── reviewing-documents/
+    │       │   ├── SKILL.md
+    │       │   └── references/review-procedure.md
+    │       └── applying-review-decisions/
+    │           └── SKILL.md
     └── design/                     # 마크다운 문서와 슬라이드 형식, 도식 생성, 문서 변환
         ├── .claude-plugin/plugin.json
         └── skills/
@@ -60,6 +67,8 @@ ai-toolkit-archive/
 | 플러그인 | skill | 용도 |
 | :---: | :--- | :--- |
 | `writing` | `writing-in-korean` | 한국어 문장을 쓰거나 고칠 때 문체, 용어, 문장 부호를 정한다. |
+| `writing` | `reviewing-documents` | 문서를 검토하고 검토 의견서를 쓰거나 갱신한다. 기본 검토 기준은 `korean-writing-guide.md`다. |
+| `writing` | `applying-review-decisions` | 검토 의견서에 표시한 결정을 대상 문서에 반영한다. |
 | `design` | `formatting-md-as-doc` | 읽기용 문서의 마크다운 형식을 정한다. |
 | `design` | `formatting-md-as-slides` | Marp 슬라이드 원고의 마크다운 형식을 정한다. |
 | `design` | `drawing-figures` | 문서에 넣을 도식과 그래프의 스타일을 정한다. |

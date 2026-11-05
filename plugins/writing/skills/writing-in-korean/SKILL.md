@@ -7,7 +7,7 @@ description: 한국어 문장을 쓰거나 고칠 때 사용한다. 문서, 노�
 
 아래 파일의 원문이 context에 없으면 먼저 읽는다. 요약만 있으면 없는 것으로 본다.
 
-- `${CLAUDE_SKILL_DIR}/references/korean-writing-guide.md`
+- `${CLAUDE_PLUGIN_ROOT}/shared/korean-writing-guide.md`
 
 # 절차
 
