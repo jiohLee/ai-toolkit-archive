@@ -204,6 +204,9 @@
     // wide tables and long inline code wrap inside the page instead of overflowing;
     // any overflow makes Chrome shrink every page of the PDF to fit
     th, td, code { overflow-wrap: anywhere; }
+    // in tables `anywhere` lets a column shrink to one character (STO -> ST/O);
+    // break-word sizes columns by whole words and still breaks an overlong word
+    th, td, th code, td code { overflow-wrap: break-word; }
     code { white-space: pre-wrap; }   // inline code defaults to `pre`, which blocks wrapping
   }
 }
