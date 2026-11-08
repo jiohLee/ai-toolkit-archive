@@ -40,6 +40,7 @@ model: sonnet
    - 판단이 서지 않으면 추측으로 고치지 않고 기타 의견(`note`)으로 쓴다.
    - 사용자 확인이 필요한 내용도 기타 의견으로 쓴다.
 4. `comments`에 의견 작성 규칙대로 `comments.jsonl`을 쓴다. 첫 줄 개요의 `target`은 1단계 출력의 값을 쓴다.
+   - 의견의 `location`은 대상 문서가 텍스트 파일이면 줄 번호로, 텍스트 파일이 아니면(PDF, docx 등) 쪽, 절, 문단 같은 자유 텍스트로 쓴다.
 5. `comments.jsonl`을 저장하면 hook이 형식을 검사한다. hook이 오류를 돌려주면 해당 줄을 고쳐 다시 저장하고, 오류가 없어질 때까지 반복한다.
    - Write나 Edit로 저장하면 hook이 항상 검사한다.
    - Bash나 PowerShell로 고칠 때는 명령에 `comments.jsonl`의 경로를 직접 적는다. 경로가 명령에 없으면 hook이 검사하지 않는다.

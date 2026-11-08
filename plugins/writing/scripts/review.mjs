@@ -70,8 +70,9 @@ const typeOf = (v) => (v === null ? 'null' : Array.isArray(v) ? 'array' : Number
 function checkSchema(value, schema, where, errors) {
   if (schema.type) {
     const t = typeOf(value);
-    const ok = schema.type === t || (schema.type === 'number' && t === 'integer');
-    if (!ok) { errors.push(`${where}: ${schema.type} 필요`); return; }
+    const types = [].concat(schema.type); // 타입 하나 또는 타입 목록
+    const ok = types.includes(t) || (types.includes('number') && t === 'integer');
+    if (!ok) { errors.push(`${where}: ${types.join(' 또는 ')} 필요`); return; }
   }
   if (schema.const !== undefined && value !== schema.const) errors.push(`${where}: ${JSON.stringify(schema.const)} 필요`);
   if (schema.enum && !schema.enum.includes(value)) errors.push(`${where}: 허용되지 않는 값 ${JSON.stringify(value)}`);
@@ -138,18 +139,19 @@ function validateFile(file) {
   }
 
   // 줄 번호 일치는 결정이 기록되기 전(검토 직후)에만 검사한다. 반영이 시작되면 원고의 줄이 바뀌기 때문이다.
+  // location이 자유 텍스트(텍스트 파일이 아닌 원고)이면 검사하지 않는다.
   const fresh = items.every(({ obj }) => obj.status === 'pending' && !('decision' in obj));
   if (targetLines && fresh) {
     for (const { line, obj } of items) {
-      if (!Number.isInteger(obj.line) || obj.line < 1) continue;
-      const actual = targetLines[obj.line - 1];
-      if (actual === undefined) { errors.push(`${line}행: line ${obj.line}이 원고 범위 밖`); continue; }
+      if (!Number.isInteger(obj.location) || obj.location < 1) continue;
+      const actual = targetLines[obj.location - 1];
+      if (actual === undefined) { errors.push(`${line}행: location ${obj.location}이 원고 범위 밖`); continue; }
       if (obj.result === 'edit' && Array.isArray(obj.minus) && typeof obj.minus[0] === 'string') {
-        if (actual.trimEnd() !== obj.minus[0].trimEnd()) errors.push(`${line}행: 원고 ${obj.line}행과 minus 첫 줄 불일치`);
+        if (actual.trimEnd() !== obj.minus[0].trimEnd()) errors.push(`${line}행: 원고 ${obj.location}행과 minus 첫 줄 불일치`);
       }
       if (obj.result === 'note' && typeof obj.quote === 'string') {
         const first = obj.quote.split(/\r?\n/)[0].trim();
-        if (first && !actual.includes(first)) errors.push(`${line}행: 원고 ${obj.line}행에 quote 없음`);
+        if (first && !actual.includes(first)) errors.push(`${line}행: 원고 ${obj.location}행에 quote 없음`);
       }
     }
   }

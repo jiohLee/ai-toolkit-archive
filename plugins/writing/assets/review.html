@@ -153,6 +153,15 @@
   details.group > summary .count { font-size: 14px; font-weight: 400; color: var(--ink-muted-48); }
   details.group > summary::after { content: "펼치기"; font-size: 14px; font-weight: 400; color: var(--primary); margin-left: 16px; }
   details.group[open] > summary::after { content: "접기"; }
+  /* 목차(내보내기 전용) */
+  .toc, .toc ul { list-style: none; margin: 0; padding: 0; }
+  .toc > li + li { margin-top: 24px; }
+  .toc a { color: inherit; text-decoration: none; }
+  .toc-cat { font-size: 21px; font-weight: 600; letter-spacing: 0.231px; }
+  .toc-cat .count { font-size: 14px; font-weight: 400; color: var(--ink-muted-48); }
+  .toc ul { margin-top: 8px; }
+  .toc ul li { padding: 6px 0; border-bottom: 1px solid var(--divider-soft); font-size: 14px; letter-spacing: -0.224px; break-inside: avoid; }
+  .toc ul .fid { margin-right: 8px; }
   .card { background: var(--canvas); border: 1px solid var(--hairline); border-radius: 18px; padding: 24px; margin-top: 20px; }
   .card.applied { background: var(--pearl); }
   .card-head { display: flex; gap: 12px; align-items: baseline; }
@@ -166,10 +175,20 @@
   .badge.stage-applied { background: var(--primary); color: #fff; }
   .reason { margin-top: 12px; }
   .rule { margin-top: 4px; font-size: 14px; color: var(--ink-muted-48); letter-spacing: -0.224px; }
-  .diff { margin-top: 16px; border: 1px solid var(--divider-soft); border-radius: 8px; overflow: hidden; font-family: var(--mono); font-size: 14px; letter-spacing: 0; }
-  .diff div { padding: 6px 12px; white-space: pre-wrap; word-break: break-word; }
-  .diff .minus { background: var(--minus-bg); }
-  .diff .plus { background: var(--plus-bg); }
+  /* 코드 블록(마크다운의 ``` 블록). diff 블록은 줄마다 삭제, 추가를 표시한다. */
+  pre.code {
+    margin: 16px 0 0; padding: 6px 0;
+    background: var(--pearl); border: 1px solid var(--divider-soft); border-radius: 8px; overflow: hidden;
+    font-family: var(--mono); font-size: 14px; letter-spacing: 0; line-height: 1.5; color: var(--ink);
+    white-space: pre-wrap; word-break: break-word;
+  }
+  pre.code code, .md pre.code code { font: inherit; background: none; padding: 0; border-radius: 0; color: inherit; }
+  pre.code .line { display: block; padding: 2px 12px; }
+  pre.code .del { background: var(--minus-bg); color: #b31d28; }
+  pre.code .ins { background: var(--plus-bg); color: #22863a; }
+  pre.code .hunk { color: #6f42c1; }
+  .diff pre.code { padding: 0; background: none; border: 0; border-radius: 0; } /* 카드 안의 diff는 상자 없이 줄 배경만 둔다. */
+  .md pre.code { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.12); color: var(--on-dark); }
   .quote { margin: 16px 0 0; padding: 4px 0 4px 16px; border-left: 3px solid var(--hairline); color: var(--ink-muted-80); }
   .controls { display: flex; gap: 16px; align-items: center; margin-top: 20px; flex-wrap: wrap; }
   .seg { display: inline-flex; background: var(--parchment); border-radius: 9999px; padding: 4px; }
@@ -182,7 +201,9 @@
     border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 11px; padding: 10px 14px;
     font: inherit; font-size: 14px; letter-spacing: -0.224px; resize: vertical; color: var(--ink);
   }
-  .applied-note { margin-top: 16px; font-size: 14px; color: var(--ink-muted-48); }
+  .applied-instr { margin-top: 16px; padding: 12px 16px; background: var(--canvas); border: 1px solid var(--divider-soft); border-radius: 8px; font-size: 14px; letter-spacing: -0.224px; }
+  .applied-instr .label { font-size: 12px; letter-spacing: -0.12px; color: var(--ink-muted-48); }
+  .applied-instr .body { margin-top: 4px; white-space: pre-wrap; word-break: break-word; }
   .empty { color: var(--ink-muted-48); }
 
   /* 바닥글, 알림 */
@@ -205,6 +226,36 @@
     .tile { padding: 48px 16px; }
     .sub-nav { padding-left: 16px; padding-right: 16px; }
   }
+
+  /* PDF 내보내기(인쇄): 첫 장은 검토 개요, 둘째 장부터 검토 의견 */
+  @page { size: A4; margin: 16mm 14mm; }
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .sub-nav, .toast { display: none !important; }
+    .tile { padding: 0; }
+    .section-title { font-size: 34px; margin-bottom: 24px; }
+    #comments-tile { break-before: page; }
+
+    /* 검토 개요는 밝은 배경으로 인쇄한다. */
+    .tile.dark { background: none; color: var(--ink); }
+    .ov-block + .ov-block { margin-top: 32px; padding-top: 32px; border-top-color: var(--hairline); }
+    .ov-heading, .ov-status, .target-quote dd, .md h2, .md h3, .md h4, .md strong { color: var(--ink); }
+    .ov-status.done { color: var(--primary); }
+    .target-quote { background: var(--parchment); border-left-color: var(--body-muted); }
+    .target-quote dt, .tile.dark .stat .label { color: var(--ink-muted-48); }
+    .tile.dark .stats { grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .tile.dark .stat { background: var(--canvas); border-color: var(--hairline); padding: 16px; }
+    .stat .num { font-size: 32px; }
+    .md { color: var(--ink-muted-80); }
+    .md code { background: var(--parchment); }
+    .md pre.code { background: var(--pearl); border-color: var(--divider-soft); color: var(--ink); }
+
+    /* 검토 의견: 목차 다음, 분류마다 새 페이지에서 시작한다. 분류 제목을 다음 카드와 붙이고, 카드는 페이지 사이에서 나누지 않는다. */
+    details.group { break-before: page; border-top: 0; padding: 0; }
+    details.group > summary { break-after: avoid; }
+    details.group > summary::after, details.group[open] > summary::after { content: none; }
+    .card { break-inside: avoid; }
+  }
 </style>
 </head>
 <body>
@@ -215,8 +266,8 @@
   </div>
 
   <main>
-    <section class="tile dark" hidden><div class="wrap" id="overview"></div></section>
-    <section class="tile" hidden><div class="wrap" id="comments"></div></section>
+    <section class="tile dark" id="overview-tile" hidden><div class="wrap" id="overview"></div></section>
+    <section class="tile" id="comments-tile" hidden><div class="wrap" id="comments"></div></section>
   </main>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -229,8 +280,8 @@
   const STAGE_LABEL = { undecided: '미결정', apply: '적용 예정', kept: '유지', applied: '반영됨' };
   const SEVERITY_LABEL = { required: '필수', optional: '권장' };
   const RESULT_LABEL = { edit: '수정', note: '기타 의견' };
-  const REQUIRED_FIELDS = ['id', 'category', 'result', 'title', 'rule', 'reason', 'severity', 'line', 'status'];
-  const ALLOWED_FIELDS = new Set([...REQUIRED_FIELDS, 'minus', 'plus', 'quote', 'decision', 'instruction']);
+  const REQUIRED_FIELDS = ['id', 'category', 'result', 'title', 'rule', 'reason', 'severity', 'status'];
+  const ALLOWED_FIELDS = new Set([...REQUIRED_FIELDS, 'location', 'minus', 'plus', 'quote', 'decision', 'instruction']);
   const ENUMS = {
     result: ['edit', 'note'],
     severity: ['required', 'optional'],
@@ -260,9 +311,10 @@
     comments: [],
     overview: null,
     decisions: {},
-    filter: { status: 'all', severity: 'all' },
+    filter: { status: 'all', severity: 'all', result: 'all' },
     collapsed: new Set(),
     errors: [],
+    printing: false, // PDF로 내보내는 동안 필터와 조작 요소 없이 모든 의견을 그린다.
   };
 
   const $ = (sel) => document.querySelector(sel);
@@ -409,6 +461,28 @@
     }
   }
 
+  /* ---------- PDF 내보내기 ---------- */
+
+  // 인쇄용으로 다시 그린 뒤 브라우저 인쇄 창을 연다. 인쇄 창에서 "PDF로 저장"을 고른다.
+  function exportPdf() {
+    const prevTitle = document.title;
+    const target = state.overview && state.overview.target;
+    if (target) document.title = `검토 의견서 - ${target.split(/[\\/]/).pop().replace(/\.md$/i, '')}`; // PDF 파일 이름
+    let restored = false;
+    const restore = () => {
+      if (restored) return;
+      restored = true;
+      window.removeEventListener('afterprint', restore);
+      state.printing = false;
+      document.title = prevTitle;
+      render();
+    };
+    window.addEventListener('afterprint', restore);
+    state.printing = true;
+    render();
+    window.print();
+  }
+
   /* ---------- 데이터 해석 ---------- */
 
   function validate(items) {
@@ -425,7 +499,10 @@
       for (const [key, values] of Object.entries(ENUMS)) {
         if (key in obj && !values.includes(obj[key])) errors.push(`${at}: 허용되지 않는 값: ${key} = ${JSON.stringify(obj[key])}`);
       }
-      if ('line' in obj && (!Number.isInteger(obj.line) || obj.line < 1)) errors.push(`${at}: line 값 오류(1 이상의 정수)`);
+      // location: 텍스트 원고는 줄 번호(1 이상의 정수), 그 밖의 원고는 위치를 설명하는 문자열
+      if ('location' in obj && !((Number.isInteger(obj.location) && obj.location >= 1) || (typeof obj.location === 'string' && obj.location.trim()))) {
+        errors.push(`${at}: location 값 오류(1 이상의 정수 또는 빈 값이 아닌 문자열)`);
+      }
       if (!Number.isInteger(obj.id) || obj.id < 1) errors.push(`${at}: id 값 오류(1 이상의 정수)`);
       else if (ids.has(obj.id)) errors.push(`${at}: id 중복: ${obj.id}`);
       else ids.add(obj.id);
@@ -516,10 +593,26 @@
       .replace(/`([^`]+)`/g, '<code>$1</code>')
       .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   }
+  // 코드 블록. 줄마다 span으로 감싸고, diff 블록은 줄의 첫 글자로 삭제(-), 추가(+), 위치(@@)를 표시한다.
+  function renderCode(lang, lines) {
+    const body = lines.map((l) => {
+      let cls = 'line';
+      if (lang === 'diff') {
+        if (l.startsWith('@@')) cls += ' hunk';
+        else if (l.startsWith('-')) cls += ' del';
+        else if (l.startsWith('+')) cls += ' ins';
+      }
+      return `<span class="${cls}">${escapeHtml(l) || ' '}</span>`;
+    }).join('');
+    const langAttr = lang ? ` class="language-${escapeHtml(lang)}"` : '';
+    return `<pre class="code"><code${langAttr}>${body}</code></pre>`;
+  }
+
   function renderMarkdown(text) {
     const out = [];
     let para = [];
     let list = null;
+    let fence = null; // 열린 코드 블록: { lang, lines }
     const flushPara = () => { if (para.length) { out.push('<p>' + inlineMd(para.join(' ')) + '</p>'); para = []; } };
     const flushList = () => {
       if (!list) return;
@@ -527,8 +620,18 @@
       list = null;
     };
     for (const raw of text.split(/\r?\n/)) {
+      if (fence) {
+        if (/^\s*```\s*$/.test(raw)) { out.push(renderCode(fence.lang, fence.lines)); fence = null; }
+        else fence.lines.push(raw);
+        continue;
+      }
       const line = raw.replace(/\s+$/, '');
       let m;
+      if ((m = line.match(/^\s*```\s*([\w-]*)/))) {
+        flushPara(); flushList();
+        fence = { lang: m[1].toLowerCase(), lines: [] };
+        continue;
+      }
       if (!line.trim()) { flushPara(); flushList(); continue; }
       if ((m = line.match(/^(#{1,4})\s+(.*)$/))) {
         flushPara(); flushList();
@@ -552,6 +655,7 @@
       para.push(line.trim());
     }
     flushPara(); flushList();
+    if (fence) out.push(renderCode(fence.lang, fence.lines)); // 닫히지 않은 코드 블록
     return out.join('\n');
   }
 
@@ -639,6 +743,7 @@
       actions.append(
         el('button', { class: 'btn-pearl', type: 'button', text: '다시 읽기', onclick: () => loadFromFolder('다시 읽음') }),
         el('button', { class: 'btn-primary', type: 'button', text: '결정 저장', onclick: saveToFolder }),
+        el('button', { class: 'btn-pearl', type: 'button', text: '내보내기', onclick: exportPdf, disabled: !hasData() }),
       );
     } else {
       center.append(pathLabel(`${DISPLAY_PATH}/${COMMENTS_FILE}`), el('button', { class: 'btn-primary', type: 'button', text: '연결하기', onclick: connect }));
@@ -661,7 +766,7 @@
       el('h3', { class: 'ov-heading', text: '검토 대상' }),
       el('dl', { class: 'target-quote' },
         el('dt', { text: '문서' }), el('dd', { text: target ? targetPath.split('/').pop() : '-' }), el('span'),
-        el('dt', { text: '경로' }), el('dd', { class: 'path', text: targetDir || '-' }), target ? copy : el('span'),
+        el('dt', { text: '경로' }), el('dd', { class: 'path', text: targetDir || '-' }), target && !state.printing ? copy : el('span'),
       ),
     ));
 
@@ -715,19 +820,27 @@
       return;
     }
 
-    const statusGroup = el('div', { class: 'filter-group' }, el('span', { class: 'flabel', text: '상태' }));
-    for (const [v, label] of [['all', '전체'], ['undecided', '미결정'], ['apply', '적용 예정'], ['kept', '유지'], ['applied', '반영됨']]) {
-      statusGroup.append(chip(label, state.filter.status === v, () => { state.filter.status = v; renderComments(); }));
+    if (!state.printing) {
+      const statusGroup = el('div', { class: 'filter-group' }, el('span', { class: 'flabel', text: '상태' }));
+      for (const [v, label] of [['all', '전체'], ['undecided', '미결정'], ['apply', '적용 예정'], ['kept', '유지'], ['applied', '반영됨']]) {
+        statusGroup.append(chip(label, state.filter.status === v, () => { state.filter.status = v; renderComments(); }));
+      }
+      const sevGroup = el('div', { class: 'filter-group' }, el('span', { class: 'flabel', text: '등급' }));
+      for (const [v, label] of [['all', '전체'], ['required', '필수'], ['optional', '권장']]) {
+        sevGroup.append(chip(label, state.filter.severity === v, () => { state.filter.severity = v; renderComments(); }));
+      }
+      const resultGroup = el('div', { class: 'filter-group' }, el('span', { class: 'flabel', text: '유형' }));
+      for (const [v, label] of [['all', '전체'], ['edit', '수정'], ['note', '기타 의견']]) {
+        resultGroup.append(chip(label, state.filter.result === v, () => { state.filter.result = v; renderComments(); }));
+      }
+      box.append(el('div', { class: 'filters' }, statusGroup, sevGroup, resultGroup));
     }
-    const sevGroup = el('div', { class: 'filter-group' }, el('span', { class: 'flabel', text: '등급' }));
-    for (const [v, label] of [['all', '전체'], ['required', '필수'], ['optional', '권장']]) {
-      sevGroup.append(chip(label, state.filter.severity === v, () => { state.filter.severity = v; renderComments(); }));
-    }
-    box.append(el('div', { class: 'filters' }, statusGroup, sevGroup));
 
-    const visible = state.comments.filter((f) =>
+    // 내보낼 때는 필터와 관계없이 모든 의견을 넣는다.
+    const visible = state.printing ? state.comments : state.comments.filter((f) =>
       (state.filter.status === 'all' || stageOf(f) === state.filter.status) &&
-      (state.filter.severity === 'all' || f.severity === state.filter.severity));
+      (state.filter.severity === 'all' || f.severity === state.filter.severity) &&
+      (state.filter.result === 'all' || f.result === state.filter.result));
     if (!visible.length) {
       box.append(el('p', { class: 'empty', text: '조건에 맞는 의견 없음' }));
       return;
@@ -739,9 +852,28 @@
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(f);
     }
+    const groupIds = new Map([...groups.keys()].map((category, i) => [category, 'cat-' + (i + 1)]));
+
+    // 내보낼 때는 제목 밑에 분류와 의견의 목차를 넣는다. 항목은 해당 분류와 카드로 연결한다.
+    if (state.printing) {
+      const toc = el('ul', { class: 'toc' });
+      for (const [category, items] of groups) {
+        const sub = el('ul');
+        for (const f of items) {
+          sub.append(el('li', {}, el('a', { href: '#f-' + f.id }, el('span', { class: 'fid', text: '#' + f.id }), f.title)));
+        }
+        toc.append(el('li', {},
+          el('a', { class: 'toc-cat', href: '#' + groupIds.get(category) }, category + ' ', el('span', { class: 'count', text: `${items.length}건` })),
+          sub,
+        ));
+      }
+      box.append(el('nav', { 'aria-label': '목차' }, toc));
+    }
+
     for (const [category, items] of groups) {
-      const details = el('details', { class: 'group', open: !state.collapsed.has(category) });
-      details.addEventListener('toggle', () => {
+      // 내보낼 때는 접은 분류도 펼친다. 이때는 접힘 상태를 바꾸지 않도록 toggle을 듣지 않는다.
+      const details = el('details', { class: 'group', id: groupIds.get(category), open: state.printing || !state.collapsed.has(category) });
+      if (!state.printing) details.addEventListener('toggle', () => {
         if (details.open) state.collapsed.delete(category); else state.collapsed.add(category);
       });
       details.append(el('summary', {}, el('span', {}, category + ' ', el('span', { class: 'count', text: `${items.length}건` }))));
@@ -763,19 +895,28 @@
       ),
       el('p', { class: 'reason', text: f.reason }),
     );
-    if (Number.isInteger(f.line)) node.append(el('p', { class: 'rule', text: `위치: ${f.line}행` }));
+    if (Number.isInteger(f.location)) node.append(el('p', { class: 'rule', text: `위치: ${f.location}행` }));
+    else if (typeof f.location === 'string' && f.location.trim()) node.append(el('p', { class: 'rule', text: '위치: ' + f.location }));
     if (f.rule) node.append(el('p', { class: 'rule', text: '근거: ' + f.rule }));
     if (f.result === 'edit') {
+      // minus, plus를 ```diff 블록으로 만들어 마크다운으로 그린다. 줄 안에 줄바꿈이 있어도 접두어를 붙여 블록이 닫히지 않게 한다.
+      const prefixed = (sign, lines) => (lines || []).map((l) => sign + String(l).replace(/\r?\n/g, '\n' + sign));
+      const md = ['```diff', ...prefixed('-', f.minus), ...prefixed('+', f.plus), '```'].join('\n');
       const diff = el('div', { class: 'diff' });
-      for (const line of f.minus || []) diff.append(el('div', { class: 'minus', text: '- ' + line }));
-      for (const line of f.plus || []) diff.append(el('div', { class: 'plus', text: '+ ' + line }));
+      diff.innerHTML = renderMarkdown(md); // 원문은 escapeHtml을 거친다.
       node.append(diff);
     } else if (f.quote) {
       node.append(el('blockquote', { class: 'quote', text: f.quote }));
     }
 
+    // 내보낼 때는 결정 조작과 기타 지시를 넣지 않는다.
+    if (state.printing) return node;
+
     if (st === 'applied') {
-      node.append(el('p', { class: 'applied-note', text: '원고에 반영됨' }));
+      if (f.instruction) node.append(el('div', { class: 'applied-instr' },
+        el('div', { class: 'label', text: '기타 지시' }),
+        el('div', { class: 'body', text: f.instruction }),
+      ));
       return node;
     }
 

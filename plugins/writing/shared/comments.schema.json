@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "comment",
   "type": "object",
-  "required": ["id", "category", "result", "title", "rule", "reason", "severity", "line", "status"],
+  "required": ["id", "category", "result", "title", "rule", "reason", "severity", "status"],
   "additionalProperties": false,
   "properties": {
     "id": { "type": "integer", "minimum": 1 },
@@ -15,7 +15,7 @@
     "minus": { "type": "array", "minItems": 1, "items": { "type": "string" } },
     "plus": { "type": "array", "items": { "type": "string" } },
     "quote": { "type": "string", "minLength": 1 },
-    "line": { "type": "integer", "minimum": 1 },
+    "location": { "type": ["integer", "string"], "minimum": 1, "minLength": 1 },
     "decision": { "enum": ["apply", "keep"] },
     "instruction": { "type": "string" },
     "status": { "enum": ["pending", "kept", "applied"] }
