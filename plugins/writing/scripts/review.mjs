@@ -160,22 +160,49 @@ function isCommentsPath(p) {
   return /[\\/]\.[^\\/]+\.review[\\/]comments\.jsonl$/.test(p);
 }
 
+// Bash, PowerShell 명령 문자열이나 도구 결과에서 comments.jsonl 경로를 찾는다.
+function findCommentsPaths(text, cwd) {
+  const found = new Set();
+  for (let p of text.match(/[^\s"'`;|&<>()=,]*comments\.jsonl/g) || []) {
+    p = p.replace(/\\\\/g, '\\');
+    if (process.platform === 'win32' && /^\/[a-zA-Z]\//.test(p)) p = `${p[1]}:${p.slice(2)}`; // Git Bash 경로(/d/...)
+    const abs = path.resolve(cwd || process.cwd(), p);
+    if (isCommentsPath(abs) && fs.existsSync(abs)) found.add(abs);
+  }
+  return [...found];
+}
+
+// hook 입력에서 검사할 comments.jsonl 목록을 만든다.
+function hookTargets(input) {
+  const ti = input?.tool_input || {};
+  if (typeof ti.file_path === 'string') return isCommentsPath(ti.file_path) ? [ti.file_path] : [];
+  if (typeof ti.command === 'string') {
+    const text = ti.command + '\n' + JSON.stringify(input?.tool_response ?? '');
+    return findCommentsPaths(text, input?.cwd);
+  }
+  return [];
+}
+
 async function validate(args) {
-  let file = args[0];
-  const hook = !file;
+  const hook = !args[0];
+  let files = [args[0]];
   if (hook) {
     let input = '';
     for await (const chunk of process.stdin) input += chunk;
-    try { file = JSON.parse(input)?.tool_input?.file_path; } catch { return; }
-    if (typeof file !== 'string' || !isCommentsPath(file)) return; // 검토 폴더의 comments.jsonl이 아니면 바로 끝낸다.
+    try { files = hookTargets(JSON.parse(input)); } catch { return; }
+    if (!files.length) return; // 검토 폴더의 comments.jsonl이 아니면 바로 끝낸다.
   }
-  if (!fs.existsSync(file)) fail(`파일 없음: ${file}`);
-  const errors = validateFile(file);
-  if (errors.length) {
-    console.error(`${file} 형식 오류 ${errors.length}건`);
-    for (const e of errors) console.error(`- ${e}`);
-    process.exit(hook ? 2 : 1);
+  let failed = false;
+  for (const file of files) {
+    if (!fs.existsSync(file)) fail(`파일 없음: ${file}`);
+    const errors = validateFile(file);
+    if (errors.length) {
+      failed = true;
+      console.error(`${file} 형식 오류 ${errors.length}건`);
+      for (const e of errors) console.error(`- ${e}`);
+    }
   }
+  if (failed) process.exit(hook ? 2 : 1);
   if (!hook) console.log('ok');
 }
 

@@ -2,10 +2,26 @@
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "Write|Edit",
+        "matcher": "Write|Edit|Bash|PowerShell",
         "hooks": [
           {
             "type": "command",
+            "if": "Write(//**/.*.review/comments.jsonl)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/review.mjs\" validate"
+          },
+          {
+            "type": "command",
+            "if": "Edit(//**/.*.review/comments.jsonl)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/review.mjs\" validate"
+          },
+          {
+            "type": "command",
+            "if": "Bash(*.review*comments.jsonl*)",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/review.mjs\" validate"
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(*.review*comments.jsonl*)",
             "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/review.mjs\" validate"
           }
         ]
