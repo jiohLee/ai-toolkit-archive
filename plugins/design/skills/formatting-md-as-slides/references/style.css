@@ -312,6 +312,11 @@ blockquote {
   background: var(--canvas-parchment);
   color: var(--ink-muted-80);
 }
+/* Inline code on a quote card: white chip, so it does not blend into the parchment */
+blockquote :not(pre) > code {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+}
 
 /* ---------- Tables: hairlines only, no grid ---------- */
 table { width: 100%; border-collapse: collapse; }
