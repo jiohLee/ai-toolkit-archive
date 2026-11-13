@@ -30,7 +30,7 @@
 /* ===================================================================== */
 .markdown-preview.markdown-preview {
   font-family: @font-text;
-  font-size: 17px;                   // typography.body: 17px, not 16px
+  font-size: 15px;                   // preview body 15px (typography.body is 17px)
   color: @ink;                       // github-light uses #333
 
   /* ---------- Headings: github-light sizes, weight 600, Apple ink ---------- */
@@ -216,7 +216,7 @@
 
   /* ---------- Print / Chrome PDF ---------- */
   @media print {
-    font-size: 15px;                 // print text at 15px; em-based sizes follow
+    font-size: 12px;                 // print text at 12px; em-based sizes follow
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;       // keep background colors in the PDF
 
