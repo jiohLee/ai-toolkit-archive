@@ -8,7 +8,7 @@ model: sonnet
 
 - 의견 작성 규칙: `${CLAUDE_PLUGIN_ROOT}/shared/comments-schema.md`
 - 의견 스키마: `${CLAUDE_PLUGIN_ROOT}/shared/comments.schema.json`
-- 기본 검토 기준: `${CLAUDE_PLUGIN_ROOT}/shared/korean-writing-guide.md`
+- 기본 검토 기준: `${CLAUDE_PLUGIN_ROOT}/shared/korean-writing-guide.md`, `${CLAUDE_PLUGIN_ROOT}/shared/korean-structure-guide.md`
 - 스크립트: `${CLAUDE_PLUGIN_ROOT}/scripts/review.mjs`
 
 # 입력
