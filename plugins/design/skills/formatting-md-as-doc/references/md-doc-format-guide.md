@@ -118,10 +118,12 @@
 
 ```markdown
 <div align="center">
+
   <img src="./figures/fNN-{name}.svg" width=80%>
+
+  *Figure N. {caption}*
 </div>
 
-*Figure N. {caption}*
 ```
 
 ## 10. 표
@@ -136,9 +138,9 @@
 | :---: | :--- |
 | 내용 1 | 내용 2 |
 
+*Table N. {caption}*
 </div>
 
-*Table N. {caption}*
 ```
 
 ## 11. 각주
