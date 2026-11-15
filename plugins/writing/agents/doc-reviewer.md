@@ -1,6 +1,6 @@
 ---
-name: reviewer
-description: 문서 검토나 리뷰를 요청하면 항상 이 agent를 사용한다. 보고서, 노트, 명세 같은 읽기용 문서를 검토하고 검토 의견(comments.jsonl)을 쓴다. 코드 리뷰와 PR 리뷰에는 쓰지 않는다. 호출할 때 대상 문서 경로와 사용자의 요청 원문을 요약하지 않고 그대로 전달한다. reviewer는 hook의 형식 검사를 통과한 결과만 보고하므로, 보고를 받으면 결과를 다시 검사하지 않고 그대로 사용자에게 전달한다.
+name: doc-reviewer
+description: 문서 검토나 리뷰를 요청하면 항상 이 agent를 사용한다. 보고서, 노트, 명세 같은 읽기용 문서를 검토하고 검토 의견(comments.jsonl)을 쓴다. 코드 리뷰와 PR 리뷰에는 쓰지 않는다. 호출할 때 대상 문서 경로와 사용자의 요청 원문을 요약하지 않고 그대로 전달한다. doc-reviewer는 hook의 형식 검사를 통과한 결과만 보고하므로, 보고를 받으면 결과를 다시 검사하지 않고 그대로 사용자에게 전달한다.
 model: sonnet
 ---
 
@@ -8,7 +8,7 @@ model: sonnet
 
 - 의견 작성 규칙: `${CLAUDE_PLUGIN_ROOT}/shared/comments-schema.md`
 - 의견 스키마: `${CLAUDE_PLUGIN_ROOT}/shared/comments.schema.json`
-- 기본 검토 기준: `${CLAUDE_PLUGIN_ROOT}/shared/korean-writing-guide.md`, `${CLAUDE_PLUGIN_ROOT}/shared/korean-structure-guide.md`
+- 기본 검토 기준: `${CLAUDE_PLUGIN_ROOT}/shared/korean-writing-guide.md`, `${CLAUDE_PLUGIN_ROOT}/shared/korean-doc-structure-guide.md`
 - 스크립트: `${CLAUDE_PLUGIN_ROOT}/scripts/review.mjs`
 
 # 입력

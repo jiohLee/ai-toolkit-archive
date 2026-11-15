@@ -1,6 +1,6 @@
 ---
-name: applying-reviewer-comments
-description: reviewer가 쓴 검토 의견(.{문서 이름}.review/comments.jsonl) 중 사용자가 적용으로 결정한 의견을 대상 문서에 반영할 때 사용한다. "의견서 반영해줘", "검토 의견 반영해줘" 같은 요청에 적용한다.
+name: applying-doc-reviewer-comments
+description: doc-reviewer가 쓴 검토 의견(.{문서 이름}.review/comments.jsonl) 중 사용자가 적용으로 결정한 의견을 대상 문서에 반영할 때 사용한다. "의견서 반영해줘", "검토 의견 반영해줘" 같은 요청에 적용한다.
 argument-hint: "{대상 문서}"
 ---
 
