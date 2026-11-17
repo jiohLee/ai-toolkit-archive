@@ -16,4 +16,4 @@ description: 보고서, 노트, 명세, 제안서 같은 읽기용 한국어 문
 3. `writing:writing-in-korean` skill을 호출하여 문장을 쓴다.
 4. 마크다운 문서이면 `design:formatting-md-as-doc` skill로 메타 정보, 목차, 표, 그림 형식을 맞춘다.
 5. 그림이 필요하면 `design:drawing-figures` skill로 그린다.
-6. 다 쓴 뒤 `writing:writing-in-korean` skill의 4단계에 따라 문장과 구성을 다시 확인하고 고친다. 이 확인은 4, 5단계의 형식, 그림 확인과 별도로 수행한다.
+6. 다 쓴 뒤 문장은 `writing:writing-in-korean` skill의 3단계에 따라, 구성은 `korean-doc-structure-guide.md`에 따라 다시 확인하고 고친다. 이 확인은 4, 5단계의 형식, 그림 확인과 별도로 수행한다.

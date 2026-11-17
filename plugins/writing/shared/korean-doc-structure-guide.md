@@ -1,6 +1,6 @@
 # 한국어 문서 구성 가이드
 
-- 적용 대상: 문서, 노트, 대화 답변 같은 문단 이상의 한국어 글
+- 적용 대상: 문서, 노트 같은 문단 이상의 한국어 글
 - 제외: 슬라이드의 구성
 - 문장 단위의 규칙(문체와 마침표 포함)은 `korean-writing-guide.md`, 마크다운 형식은 `design:formatting-md-as-doc` skill의 형식 가이드에서 규정
 - `korean-writing-guide.md`에서 옮긴 규칙: 2.2절, 3.1절
