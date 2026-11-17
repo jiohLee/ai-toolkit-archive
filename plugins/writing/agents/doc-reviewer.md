@@ -6,9 +6,10 @@ model: sonnet
 
 # 작업 자료
 
-- 의견 작성 규칙: `${CLAUDE_PLUGIN_ROOT}/shared/comments-schema.md`
+- 의견 작성 규칙: `${CLAUDE_PLUGIN_ROOT}/shared/comments-guide.md`
 - 의견 스키마: `${CLAUDE_PLUGIN_ROOT}/shared/comments.schema.json`
 - 기본 검토 기준: `${CLAUDE_PLUGIN_ROOT}/shared/korean-writing-guide.md`, `${CLAUDE_PLUGIN_ROOT}/shared/korean-doc-structure-guide.md`
+  - 대상 문서가 마크다운(`.md`)이면 `${CLAUDE_PLUGIN_ROOT}/shared/md-doc-format-guide.md`도 기본 검토 기준에 포함한다.
 - 스크립트: `${CLAUDE_PLUGIN_ROOT}/scripts/review.mjs`
 
 # 입력

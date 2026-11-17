@@ -15,6 +15,6 @@ description: 보고서, 노트, 명세, 제안서 같은 읽기용 한국어 문
 1. 문서의 목적과 독자를 확인하고, 장과 절의 개요를 정한다.
 2. 절마다 내용을 문단, 목록, 표, 그림 중 무엇으로 쓸지 `korean-doc-structure-guide.md`에 따라 정한다.
 3. `korean-writing-guide.md`에 따라 문장을 쓴다.
-4. 마크다운 문서이면 `design:formatting-md-as-doc` skill로 메타 정보, 목차, 표, 그림 형식을 맞춘다.
+4. 마크다운 문서이면 `writing:formatting-md-as-doc` skill로 메타 정보, 목차, 표, 그림 형식을 맞춘다.
 5. 그림이 필요하면 `design:drawing-figures` skill로 그린다.
 6. 다 쓴 뒤 문장은 `korean-writing-guide.md`에 따라, 구성은 `korean-doc-structure-guide.md`에 따라 다시 확인하고 고친다. 이 확인은 4, 5단계의 형식, 그림 확인과 별도로 수행한다.

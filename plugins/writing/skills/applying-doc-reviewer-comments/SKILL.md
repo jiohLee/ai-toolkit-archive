@@ -8,7 +8,7 @@ argument-hint: "{대상 문서}"
 
 아래 파일의 원문이 context에 없으면 먼저 읽는다.
 
-- `${CLAUDE_PLUGIN_ROOT}/shared/comments-schema.md`
+- `${CLAUDE_PLUGIN_ROOT}/shared/comments-guide.md`
 
 # 요청 인자
 

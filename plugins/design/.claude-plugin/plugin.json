@@ -1,6 +1,6 @@
 {
   "name": "design",
-  "description": "문서 작업과 변환에 필요한 형식 및 디자인 가이드 툴킷",
+  "description": "문서의 렌더링 스타일과 도식 디자인 툴킷",
   "author": {
     "name": "jiohLee"
   }
