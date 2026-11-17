@@ -77,7 +77,7 @@ ai-toolkit-archive/
 
 | 플러그인 | skill | 용도 |
 | :---: | :--- | :--- |
-| `writing` | `writing-in-korean` | 모든 한국어 문장의 문체, 용어, 문장 부호를 정한다. 문단 이상의 글이면 구성 규칙도 적용한다. |
+| `writing` | `writing-in-korean` | 모든 한국어 문장의 문체, 용어, 문장 부호를 정한다. |
 | `writing` | `writing-docs-in-korean` | 읽기용 한국어 문서의 구성을 정하고 문장, 마크다운 형식, 그림 작업을 한 절차로 진행한다. |
 | `writing` | `applying-doc-reviewer-comments` | 검토 페이지에서 적용으로 결정한 검토 의견을 대상 문서에 반영한다. |
 | `design` | `formatting-md-as-doc` | 읽기용 문서의 마크다운 형식을 정한다. |
