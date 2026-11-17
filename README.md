@@ -32,8 +32,10 @@ ai-toolkit-archive/
     ├── writing/                    # 한국어 작문, 문서 검토
     │   ├── .claude-plugin/plugin.json
     │   ├── agents/doc-reviewer.md  # 문서 검토 subagent
-    │   ├── hooks/hooks.json        # comments.jsonl 저장 시 validate 실행
-    │   ├── scripts/review.mjs      # init, validate
+    │   ├── hooks/hooks.json        # 세션 시작 시 작문 가이드 주입, comments.jsonl 저장 시 validate 실행
+    │   ├── scripts/
+    │   │   ├── inject-writing-guide.mjs  # SessionStart hook: korean-writing-guide.md 주입
+    │   │   └── review.mjs                # init, validate
     │   ├── assets/review.html      # 검토 페이지
     │   ├── shared/
     │   │   ├── korean-writing-guide.md       # 문장 규칙, 글의 종류별 문체와 마침표
@@ -41,8 +43,6 @@ ai-toolkit-archive/
     │   │   ├── comments.schema.json
     │   │   └── comments-schema.md
     │   └── skills/
-    │       ├── writing-in-korean/
-    │       │   └── SKILL.md
     │       ├── writing-docs-in-korean/
     │       │   └── SKILL.md
     │       └── applying-doc-reviewer-comments/
@@ -77,7 +77,6 @@ ai-toolkit-archive/
 
 | 플러그인 | skill | 용도 |
 | :---: | :--- | :--- |
-| `writing` | `writing-in-korean` | 모든 한국어 문장의 문체, 용어, 문장 부호를 정한다. |
 | `writing` | `writing-docs-in-korean` | 읽기용 한국어 문서의 구성을 정하고 문장, 마크다운 형식, 그림 작업을 한 절차로 진행한다. |
 | `writing` | `applying-doc-reviewer-comments` | 검토 페이지에서 적용으로 결정한 검토 의견을 대상 문서에 반영한다. |
 | `design` | `formatting-md-as-doc` | 읽기용 문서의 마크다운 형식을 정한다. |
@@ -89,6 +88,7 @@ ai-toolkit-archive/
 
 *Table 1. 플러그인별 skill*
 
+- 한국어 문장 규칙은 skill이 아니라 `writing` 플러그인의 SessionStart hook이 적용한다. hook은 세션 시작, 재개, `/clear`, compact 때마다 `korean-writing-guide.md` 원문을 context에 주입한다. 따라서 대화 답변을 포함한 모든 한국어 문장에 가이드가 적용되고, compact 뒤에도 원문이 유지된다.
 - 문서 검토는 skill이 아니라 `writing` 플러그인의 `doc-reviewer` subagent가 담당한다. "검토해줘"처럼 요청하거나 `@doc-reviewer`로 호출한다. 기본 검토 기준은 `korean-writing-guide.md`와 `korean-doc-structure-guide.md`다.
 - `doc-reviewer`는 대상 문서 옆에 검토 폴더(`.{문서 이름}.review/`)를 만들고 `comments.jsonl`과 `review.html`을 둔다. `review.html`은 Chrome이나 Edge에서 연다.
 
