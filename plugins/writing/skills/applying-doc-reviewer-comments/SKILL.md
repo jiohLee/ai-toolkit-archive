@@ -25,6 +25,7 @@ argument-hint: "{대상 문서}"
    - `status` 변경: 반영에 성공한 의견만 `comments.jsonl`에서 `status`를 `applied`로 바꾼다. 다른 필드와 다른 줄은 바꾸지 않는다.
 4. 검사: `comments.jsonl`을 고치면 hook이 형식을 검사한다. hook이 오류를 돌려주면 `comments.jsonl`을 고쳐 다시 저장하고, 오류가 없어질 때까지 반복한다.
    - Bash나 PowerShell 명령에는 `comments.jsonl`의 경로를 직접 적는다. 경로가 명령에 없으면 hook이 검사하지 않는다.
+   - 수정을 마치면 hook 결과와 관계없이 `node "${CLAUDE_PLUGIN_ROOT}/scripts/review.mjs" validate "{comments.jsonl 경로}"`로 직접 검사하고, `ok`를 확인한다.
    - Write나 Edit로 고치면 hook이 항상 검사한다.
 5. 사용자에게 아래 내용을 보고한다.
    - 반영, 유지, 미결정, 실패 건수

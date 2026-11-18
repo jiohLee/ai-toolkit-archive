@@ -138,7 +138,7 @@ function validateFile(file) {
     ids.add(obj.id);
   }
 
-  // 줄 번호 일치는 결정이 기록되기 전(검토 직후)에만 검사한다. 반영이 시작되면 원고의 줄이 바뀌기 때문이다.
+  // 줄 번호와 minus, quote의 일치는 결정이 기록되기 전(검토 직후)에만 검사한다. 반영이 시작되면 원고의 줄이 바뀌기 때문이다.
   // location이 자유 텍스트(텍스트 파일이 아닌 원고)이면 검사하지 않는다.
   const fresh = items.every(({ obj }) => obj.status === 'pending' && !('decision' in obj));
   if (targetLines && fresh) {
@@ -146,8 +146,11 @@ function validateFile(file) {
       if (!Number.isInteger(obj.location) || obj.location < 1) continue;
       const actual = targetLines[obj.location - 1];
       if (actual === undefined) { errors.push(`${line}행: location ${obj.location}이 원고 범위 밖`); continue; }
-      if (obj.result === 'edit' && Array.isArray(obj.minus) && typeof obj.minus[0] === 'string') {
-        if (actual.trimEnd() !== obj.minus[0].trimEnd()) errors.push(`${line}행: 원고 ${obj.location}행과 minus 첫 줄 불일치`);
+      if (obj.result === 'edit' && Array.isArray(obj.minus)) {
+        // minus의 모든 줄이 location번째 줄부터 차례로 원고와 같아야 한다.
+        const bad = obj.minus.findIndex((m, i) =>
+          typeof m === 'string' && targetLines[obj.location - 1 + i]?.trimEnd() !== m.trimEnd());
+        if (bad >= 0) errors.push(`${line}행: minus[${bad}]과 원고 ${obj.location + bad}행 불일치`);
       }
       if (obj.result === 'note' && typeof obj.quote === 'string') {
         const first = obj.quote.split(/\r?\n/)[0].trim();
@@ -162,27 +165,48 @@ function isCommentsPath(p) {
   return /[\\/]\.[^\\/]+\.review[\\/]comments\.jsonl$/.test(p);
 }
 
+// JSON 이스케이프된 역슬래시를 되돌리고, Git Bash 경로(/d/...)를 Windows 경로로 바꾼다.
+function toNativePath(p) {
+  p = p.replace(/\\\\/g, '\\');
+  if (process.platform === 'win32' && /^\/[a-zA-Z](\/|$)/.test(p)) p = `${p[1]}:${p.slice(2) || '/'}`;
+  return p;
+}
+
 // Bash, PowerShell 명령 문자열이나 도구 결과에서 comments.jsonl 경로를 찾는다.
-function findCommentsPaths(text, cwd) {
+// 따옴표로 감싼 경로(공백 포함)와, 명령 안의 cd, Set-Location으로 옮긴 폴더 기준의 상대 경로도 찾는다.
+function findCommentsPaths(command, response, cwd) {
+  const bases = [cwd || process.cwd()];
+  const cdRe = /(?:^|[;&|\n(]\s*)(?:cd|pushd|Set-Location|Push-Location|sl)\s+(?:-(?:Literal)?Path\s+)?(?:"([^"]+)"|'([^']+)'|([^\s;&|)]+))/gi;
+  for (const m of command.matchAll(cdRe)) {
+    bases.push(path.resolve(bases[bases.length - 1], toNativePath(m[1] ?? m[2] ?? m[3])));
+  }
+
+  const candidates = [];
+  for (const m of command.matchAll(/"([^"\n]*comments\.jsonl)"|'([^'\n]*comments\.jsonl)'/g)) candidates.push(m[1] ?? m[2]);
+  for (const text of [command, response]) candidates.push(...(text.match(/[^\s"'`;|&<>()=,]*comments\.jsonl/g) || []));
+
   const found = new Set();
-  for (let p of text.match(/[^\s"'`;|&<>()=,]*comments\.jsonl/g) || []) {
-    p = p.replace(/\\\\/g, '\\');
-    if (process.platform === 'win32' && /^\/[a-zA-Z]\//.test(p)) p = `${p[1]}:${p.slice(2)}`; // Git Bash 경로(/d/...)
-    const abs = path.resolve(cwd || process.cwd(), p);
-    if (isCommentsPath(abs) && fs.existsSync(abs)) found.add(abs);
+  for (const c of candidates) {
+    const p = toNativePath(c);
+    for (const base of bases) {
+      const abs = path.resolve(base, p);
+      if (isCommentsPath(abs) && fs.existsSync(abs)) { found.add(abs); break; }
+    }
   }
   return [...found];
 }
 
 // hook 입력에서 검사할 comments.jsonl 목록을 만든다.
+// unresolved: 명령이 검토 폴더의 comments.jsonl을 언급했지만 실제 파일을 찾지 못한 경우
 function hookTargets(input) {
   const ti = input?.tool_input || {};
-  if (typeof ti.file_path === 'string') return isCommentsPath(ti.file_path) ? [ti.file_path] : [];
+  if (typeof ti.file_path === 'string') return { files: isCommentsPath(ti.file_path) ? [ti.file_path] : [] };
   if (typeof ti.command === 'string') {
-    const text = ti.command + '\n' + JSON.stringify(input?.tool_response ?? '');
-    return findCommentsPaths(text, input?.cwd);
+    const files = findCommentsPaths(ti.command, JSON.stringify(input?.tool_response ?? ''), input?.cwd);
+    const unresolved = !files.length && /\.review[\s\S]*comments\.jsonl/.test(ti.command);
+    return { files, unresolved };
   }
-  return [];
+  return { files: [] };
 }
 
 async function validate(args) {
@@ -191,7 +215,15 @@ async function validate(args) {
   if (hook) {
     let input = '';
     for await (const chunk of process.stdin) input += chunk;
-    try { files = hookTargets(JSON.parse(input)); } catch { return; }
+    let target;
+    try { target = hookTargets(JSON.parse(input)); } catch { return; }
+    files = target.files;
+    if (target.unresolved) {
+      // 검사를 조용히 건너뛰지 않고, 직접 검사하도록 알린다.
+      console.error('명령에서 comments.jsonl의 실제 경로를 찾지 못해 형식 검사를 건너뛰었다. '
+        + 'comments.jsonl을 고쳤다면 review.mjs validate "<comments.jsonl 절대 경로>"로 직접 검사한다.');
+      process.exit(2);
+    }
     if (!files.length) return; // 검토 폴더의 comments.jsonl이 아니면 바로 끝낸다.
   }
   let failed = false;

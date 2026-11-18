@@ -18,11 +18,11 @@
 
 ## 1. 구성
 
-- 다루는 대상이 같은 skill끼리 플러그인 하나로 묶는다.
-- skill 하나만 쓰는 자료는 그 skill 폴더의 `references/`에 두고 `${CLAUDE_SKILL_DIR}/references/<파일>`로 가리킨다.
-- 플러그인 안의 여러 skill이 함께 쓰는 지침은 그 플러그인의 `shared/`에 두고 `${CLAUDE_PLUGIN_ROOT}/shared/<파일>`로 가리킨다.
-- 다른 skill의 자료가 필요하면 파일을 직접 읽지 않고 그 skill을 호출한다.
-- skill 이름은 동명사형(동사+ing)으로 짓는다.
+- 플러그인 구분: 다루는 대상이 같은 skill끼리 하나의 플러그인으로 구성
+- skill 하나만 쓰는 자료: 그 skill 폴더의 `references/`에 저장, `${CLAUDE_SKILL_DIR}/references/<파일>`로 참조
+- 플러그인 안의 여러 skill이 함께 쓰는 지침: 그 플러그인의 `shared/`에 저장, `${CLAUDE_PLUGIN_ROOT}/shared/<파일>`로 참조
+- 다른 skill의 자료: 파일을 직접 읽지 않고 그 skill을 호출
+- skill 이름: 동명사형(동사+ing)
 
 ```text
 ai-toolkit-archive/
@@ -71,22 +71,28 @@ ai-toolkit-archive/
 
 | 플러그인 | skill | 용도 |
 | :---: | :--- | :--- |
-| `writing` | `writing-docs-in-korean` | 읽기용 한국어 문서의 구성을 정하고 문장, 마크다운 형식, 그림 작업을 한 절차로 진행한다. |
-| `writing` | `formatting-md-as-doc` | 읽기용 문서의 마크다운 형식을 정한다. |
-| `writing` | `applying-doc-reviewer-comments` | 검토 페이지에서 적용으로 결정한 검토 의견을 대상 문서에 반영한다. |
-| `design` | `exporting-md-to-pdf` | 마크다운 문서를 MPE와 같은 스타일의 PDF로 내보내고, 미리보기 환경을 정한다. |
-| `design` | `drawing-figures` | 문서에 넣을 도식과 그래프의 스타일을 정한다. |
+| `writing` | `writing-docs-in-korean` | 읽기용 한국어 문서의 구성, 문장, 마크다운 형식, 그림 작업 |
+| `writing` | `formatting-md-as-doc` | 읽기용 문서의 마크다운 형식 |
+| `writing` | `applying-doc-reviewer-comments` | 적용으로 결정한 검토 의견의 대상 문서 반영 |
+| `design` | `exporting-md-to-pdf` | MPE와 같은 스타일의 PDF 내보내기, 미리보기 환경 설정 |
+| `design` | `drawing-figures` | 문서에 넣을 도식과 그래프의 스타일 |
 
 </div>
 
 *Table 1. 플러그인별 skill*
 
-- 한국어 문장 규칙은 skill이 아니라 `writing` 플러그인의 SessionStart hook이 적용한다. hook은 세션 시작, 재개, `/clear`, compact 때마다 `korean-writing-guide.md` 원문을 context에 주입한다. 따라서 대화 답변을 포함한 모든 한국어 문장에 가이드가 적용되고, compact 뒤에도 원문이 유지된다.
-- 문서 검토는 skill이 아니라 `writing` 플러그인의 `doc-reviewer` subagent가 담당한다. "검토해줘"처럼 요청하거나 `@doc-reviewer`로 호출한다. 기본 검토 기준은 `korean-writing-guide.md`와 `korean-doc-structure-guide.md`이고, 대상 문서가 마크다운이면 `md-doc-format-guide.md`도 포함한다.
-- `doc-reviewer`는 대상 문서 옆에 검토 폴더(`.{문서 이름}.review/`)를 만들고 `comments.jsonl`과 `review.html`을 둔다. `review.html`은 Chrome이나 Edge에서 연다.
-
-- `exporting-md-to-pdf`의 `style.less`는 작업 환경에 스타일이 없을 때 복사해 쓰는 기본 스타일이다.
-- `style.less`의 원본은 note-archive의 `99-settings/markdown-preview-enhanced/style.apple.less`다. 원본을 고치면 이 저장소에도 복사한다.
+- 한국어 문장 규칙: skill이 아니라 `writing` 플러그인의 SessionStart hook이 적용
+  - 주입 시점: 세션 시작, 재개, `/clear`, compact
+  - 주입 내용: `korean-writing-guide.md` 원문
+  - 효과: 대화 답변을 포함한 모든 한국어 문장에 가이드 적용, compact 뒤에도 원문 유지
+- 문서 검토: skill이 아니라 `writing` 플러그인의 `doc-reviewer` subagent가 담당
+  - 호출 방법: "검토해줘" 같은 요청 또는 `@doc-reviewer`
+  - 기본 검토 기준: `korean-writing-guide.md`, `korean-doc-structure-guide.md`, 대상 문서가 마크다운이면 `md-doc-format-guide.md` 추가
+  - 산출물: 대상 문서 옆 검토 폴더(`.{문서 이름}.review/`)의 `comments.jsonl`, `review.html`
+  - `review.html`은 Chrome이나 Edge에서 열기
+- `exporting-md-to-pdf`의 `style.less`: 작업 환경에 스타일이 없을 때 복사해 쓰는 기본 스타일
+  - 원본: note-archive의 `99-settings/markdown-preview-enhanced/style.apple.less`
+  - 원본을 고치면 이 저장소에도 복사
 
 ## 2. 등록과 활성화
 

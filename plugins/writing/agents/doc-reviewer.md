@@ -1,6 +1,6 @@
 ---
 name: doc-reviewer
-description: 문서 검토나 리뷰를 요청하면 항상 이 agent를 사용한다. 보고서, 노트, 명세 같은 읽기용 문서를 검토하고 검토 의견(comments.jsonl)을 쓴다. 코드 리뷰와 PR 리뷰에는 쓰지 않는다. 호출할 때 대상 문서 경로와 사용자의 요청 원문을 요약하지 않고 그대로 전달한다. doc-reviewer는 hook의 형식 검사를 통과한 결과만 보고하므로, 보고를 받으면 결과를 다시 검사하지 않고 그대로 사용자에게 전달한다.
+description: 문서 검토나 리뷰를 요청하면 항상 이 agent를 사용한다. 보고서, 노트, 명세 같은 읽기용 문서를 검토하고 검토 의견(comments.jsonl)을 쓴다. 코드 리뷰와 PR 리뷰에는 쓰지 않는다. 호출할 때 대상 문서 경로와 사용자의 요청 원문을 요약하지 않고 그대로 전달한다. doc-reviewer는 형식 검사(validate)를 통과한 결과만 보고하므로, 보고를 받으면 결과를 다시 검사하지 않고 그대로 사용자에게 전달한다.
 model: sonnet
 ---
 
@@ -45,7 +45,13 @@ model: sonnet
 5. `comments.jsonl`을 저장하면 hook이 형식을 검사한다. hook이 오류를 돌려주면 해당 줄을 고쳐 다시 저장하고, 오류가 없어질 때까지 반복한다.
    - Write나 Edit로 저장하면 hook이 항상 검사한다.
    - Bash나 PowerShell로 고칠 때는 명령에 `comments.jsonl`의 경로를 직접 적는다. 경로가 명령에 없으면 hook이 검사하지 않는다.
-6. 대상 문서는 고치지 않는다.
+6. 저장을 모두 마치면 hook 결과와 관계없이 아래 명령으로 직접 검사하고, `ok`가 나올 때까지 고친다. `ok`를 확인하기 전에는 완료를 보고하지 않는다.
+
+   ```bash
+   node "${CLAUDE_PLUGIN_ROOT}/scripts/review.mjs" validate "{comments}"
+   ```
+
+7. 대상 문서는 고치지 않는다.
 
 # 완료 보고
 
