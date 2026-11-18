@@ -7,7 +7,7 @@ description: 문서에 넣을 도식과 그래프를 그리거나 고칠 때 사
 
 아래 파일의 원문이 context에 없으면 먼저 읽는다. 요약만 있으면 없는 것으로 본다.
 
-- `${CLAUDE_SKILL_DIR}/references/figure-style.md`
+- `${CLAUDE_SKILL_DIR}/references/figure-style-guide.md`
 
 # 입력
 - 생성: figure 설명(데이터, 표기, 수식, 참고 이미지), 파일 이름, 저장 디렉터리.
@@ -40,7 +40,7 @@ description: 문서에 넣을 도식과 그래프를 그리거나 고칠 때 사
 
 ## 스타일 규칙
 
-- 색, 글꼴, 같은 스타일은 작업 자료(`${CLAUDE_SKILL_DIR}/references/figure-style.md`)를 따른다.
+- 색, 글꼴, 같은 스타일은 작업 자료(`${CLAUDE_SKILL_DIR}/references/figure-style-guide.md`)를 따른다.
 - 요소끼리 간섭하지 않도록 충분한 간격을 둔다.
 - 요소와 표기가 멀어지면 둘 사이를 회색 실선으로 잇는다.
 - 필요하면 스케일 바, 범례, 좌표축을 표시한다.

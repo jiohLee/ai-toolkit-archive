@@ -62,7 +62,7 @@ ai-toolkit-archive/
             │       └── pdf-pages.mjs     # PDF 페이지를 PNG로 저장하여 검증
             └── drawing-figures/
                 ├── SKILL.md
-                └── references/figure-style.md
+                └── references/figure-style-guide.md
 ```
 
 ### 1.1. skill 목록
